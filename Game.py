@@ -8,7 +8,7 @@
 #   3. go to room 2 to inteact with fireplace
 #################################################
 
-
+print("Justin is a yapper")
 from tkinter import *
 
 # Class representing a room in the game
