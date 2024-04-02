@@ -1,0 +1,11 @@
+import pygame
+pygame.init()
+pygame.mixer.init()
+
+#NormalBGM
+pygame.mixer.music.load('PsycBGM.mp3')
+pygame.mixer.music.play(-1)
+
+#RightWingBGM
+pygame.mixer.music.load('Flatline.mp3')
+pygame.mixer.music.play(-1)
