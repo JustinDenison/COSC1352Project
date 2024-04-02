@@ -1,0 +1,261 @@
+###############################################
+# Name: Justin Denison
+# Date: 3/30/24 (final)
+# A game with many rooms and a puzzle
+# Instructions:
+#   1. take key and go to room 4 to interact with chest
+#   2. go to room 3 to interact with statue
+#   3. go to room 2 to inteact with fireplace
+#################################################
+
+
+from tkinter import *
+
+# Class representing a room in the game
+class Room(object):
+    def __init__(self, name, image):
+        # Initialize room attributes
+        self._name = name
+        self._image = image
+        self._exits = {}
+        self._items = {}
+        self._grabbables = []
+
+    # Getter and setter methods for room attributes
+    @property
+    def name(self):
+        return self._name
+
+    @name.setter
+    def name(self, value):
+        self._name = value
+
+    @property
+    def image(self):
+        return self._image
+
+    @image.setter
+    def image(self, value):
+        self._image = value
+
+    @property
+    def exits(self):
+        return self._exits
+
+    @exits.setter
+    def exits(self, value):
+        self._exits = value
+
+    @property
+    def items(self):
+        return self._items
+
+    @items.setter
+    def items(self, value):
+        self._items = value
+
+    @property
+    def grabbables(self):
+        return self._grabbables
+
+    @grabbables.setter
+    def grabbables(self, value):
+        self._grabbables = value
+
+    # Method to add an exit to the room
+    def addExit(self, exit, room):
+        self._exits[exit] = room
+
+    # Method to add an item to the room
+    def addItem(self, item, desc):
+        self._items[item] = desc
+
+    # Method to add a grabbable item to the room
+    def addGrabbable(self, item):
+        self._grabbables.append(item)
+
+    # Method to remove a grabbable item from the room
+    def delGrabbable(self, item):
+        self._grabbables.remove(item)
+
+    # Method to return a string description of the room
+    def __str__(self):
+        s = "You are in {}.\n".format(self.name)
+        s += "You see: "
+        for item in self.items.keys():
+            s += item + " "
+        s += "\n"
+        s += "You can carry: "
+        for grab in self.grabbables:
+            s += grab + " "
+        s += "\n"
+        s += "Exits: "
+        for exit in self.exits.keys():
+            s += exit + " "
+        return s
+
+# Class representing the game
+class Game(Frame):
+    def __init__(self, parent):
+        Frame.__init__(self, parent)
+
+    # Method to create rooms in the game
+    def createRooms(self):
+        r1 = Room("Room 1", "room1.gif")
+        r2 = Room("Room 2", "room2.gif")
+        r3 = Room("Room 3", "room3.gif")
+        r4 = Room("Room 4", "room4.gif")
+        r1.addExit("east", r2)
+        r1.addExit("south", r3)
+        r2.addExit("west", r1)
+        r2.addExit("south", r4)
+        r3.addExit("north", r1)
+        r3.addExit("east", r4)
+        r4.addExit("west", r3)
+        r4.addExit("north", r2)
+        r1.addItem("chair", "it looks uncomfortable")
+        r1.addItem("table", "it looks very sturdy")
+        r2.addItem("rug", "it looks very old and recently moved")
+        r2.addItem("fireplace", "it provides a nice warm atmosphere")
+        r3.addItem("bookshelf", "it has many random books on it and some big ones that stand out")
+        r3.addItem("statue", "it is small and seems to be hollow?")
+        r3.addItem("desk", "it has a drawer that needs to be unlocked")
+        r4.addItem("brewrig", "it is here for some reason, I guess")
+        r4.addItem("chest", "it seems to be a locked chest")
+        r1.addGrabbable("key")
+        r3.addGrabbable("book")
+        r4.addGrabbable("beverage")
+
+        Game.currentRoom = r1
+        Game.inventory = []
+
+    # Method to set up the graphical user interface
+    def setupGUI(self):
+        self.pack(fill=BOTH, expand=1)
+        Game.player_input = Entry(self, bg="white")
+        Game.player_input.bind("<Return>", self.process)
+        Game.player_input.pack(side=BOTTOM, fill=X)
+        Game.player_input.focus()
+
+        img = None
+        Game.image = Label(self, width=int(WIDTH / 2), image=img)
+        Game.image.image = img
+        Game.image.pack(side=LEFT, fill=Y)
+        Game.image.pack_propagate(False)
+
+        text_frame = Frame(self, width=WIDTH / 2)
+
+        Game.text = Text(text_frame, bg="lightgrey", state=DISABLED)
+        Game.text.pack(fill=Y, expand=1)
+        text_frame.pack(side=RIGHT, fill=Y)
+        text_frame.pack_propagate(False)
+
+    # Method to set the current room image
+    def setRoomImage(self):
+        if (Game.currentRoom == None):
+            Game.img = PhotoImage(file="skull.gif")
+        else:
+            Game.img = PhotoImage(file=Game.currentRoom.image)
+
+        Game.image.config(image=Game.img)
+        Game.image.image = Game.img
+
+    # Method to set the status displayed on the right of the GUI
+    def setStatus(self, status):
+        Game.text.config(state=NORMAL)
+        Game.text.delete("1.0", END)
+        if (Game.currentRoom == None):
+            Game.text.insert(END, "You are dead")
+        else:
+            possible_actions = "Hints: \nYou can type: \ngo direction \ndirection = south, north, east, west \nlook item \nitem = check 'you see' \ntake grabbable \ngrabbable = see 'you can carry'"
+            Game.text.insert(END, str(Game.currentRoom) + "\nYou are carrying: " + str(Game.inventory) + "\n\n" + status + "\n\n\n" + possible_actions)
+            Game.text.config(state=DISABLED)
+
+    # Method to start playing the game
+    def play(self):
+        self.createRooms()
+        self.setupGUI()
+        self.setRoomImage()
+        self.setStatus("")
+
+    # Method to process the player's input
+    def process(self, event):
+        action = Game.player_input.get()
+        action = action.lower()
+        response = "I don't understand. Try verb noun. Valid verbs are go, look, take."
+        if (action == "quit" or action == "exit" or action == "bye" or action == "sionara"):
+            exit(0)
+        if (Game.currentRoom == None):
+            Game.player_input.delete(0, END)
+            return
+        words = action.split()
+        if (len(words) == 2):
+            verb = words[0]
+            noun = words[1]
+
+        done = False
+
+        if (verb == "go"):
+            response = "Invalid exit."
+
+            if (noun in Game.currentRoom.exits):
+                Game.currentRoom = Game.currentRoom.exits[noun]
+                response = "Room changed."
+        elif (verb == "look"):
+            response = "I don't see that item"
+            if (noun in Game.currentRoom.items):
+                response = Game.currentRoom.items[noun]
+        elif verb == "interact":
+            # Check if the noun is interactable
+            if noun in ["chair", "table", "rug", "brewrig"]:
+                response = Game.currentRoom.items[noun]
+            # Handle specific interactions based on items and inventory
+            elif noun == "chest":
+                if "key" in Game.inventory and "hammer" not in Game.inventory:
+                    response = "Interesting! The key unlocked the chest and in it you found a hammer!"
+                    Game.inventory.append("hammer")
+                else:
+                    response = "The chest is locked."
+            elif noun == "statue":
+                if "hammer" in Game.inventory and "fire extinguisher" not in Game.inventory:
+                    response = "Interesting! The hammer smashed the statue and you found a fire extinguisher in it!"
+                    Game.inventory.append("fire extinguisher")
+                else:
+                    response = "The statue seems sturdy."
+            elif noun == "fireplace":
+                if "fire extinguisher" in Game.inventory:
+                    response = "You have extinguished the fireplace and escaped through a hidden door!"
+                    exit(0)
+                else:
+                    response = "The fireplace crackles warmly."
+        elif (verb == "take"):
+            response = "I don't see that item"
+            for grabbable in Game.currentRoom.grabbables:
+                if (noun == grabbable):
+                    Game.inventory.append(grabbable)
+                    Game.currentRoom.delGrabbable(grabbable)
+                    response = "Item grabbed"
+                    break
+        self.setStatus(response)
+        self.setRoomImage()
+        Game.player_input.delete(0, END)
+
+
+
+######################MAIN#########################
+
+# Default size of the GUI
+WIDTH = 800
+HEIGHT = 600
+
+# Create the window
+window = Tk()
+window.title("Room Adventure")
+
+# Create the GUI as a Tkinter canvas inside the window
+g = Game(window)
+# Play the game
+g.play()
+
+# Wait for the window to close
+window.mainloop()
