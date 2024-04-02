@@ -1,0 +1,219 @@
+###########################################################################################
+# Name: John Auman
+# Date: 42/2024
+# Description: Hour of Trial. A room adventure game where you try to find clues to get the identity of the ghost.
+#				After spending 60 moves it will find you, and ask you who it is. guess right, and you can go, guess wrong...
+#				Additions: You don't need to give a command, so not like "Look at x", you only need to type "x". A GIF file player, BGS,
+#				              and a looped mansion, so the left is connected to the right and bottom to the top.
+#				Needed Pakages: Pillow and Pygame
+###########################################################################################
+import tkinter as tk
+from PIL import Image, ImageTk, ImageSequence
+import pygame
+import sys
+
+pygame.init()
+pygame.mixer.init()
+pygame.mixer.music.load('EchoSound.mp3')
+pygame.mixer.music.play(-1)
+
+TimeTillEnd = 60
+GrabedItems = []
+
+class ItemPopup(tk.Toplevel):
+    def __init__(self, master, item_name, item_description):
+        super().__init__(master)
+        self.title(item_name)
+        self.geometry("400x100")
+        
+        self.label = tk.Label(self, text=item_description)
+        self.label.pack(padx=10, pady=10)
+
+class GUI(tk.Tk):
+    def __init__(self, image_path):
+        super().__init__()
+
+        self.title("Hour of Trial")
+        
+        text = ""
+        text += "\nYou are in "+cr.name
+        text += "\nYou can go North, South, East, or West"
+        text += f"\nYou can grab "+cr.grabbables[0]
+        text += f"\nYou can look at "+cr.items[0]+"\n \n"
+        text += "Just type what you want to do, if you want to move type the direction,\n if you want to look at something or grab it type in the object. \n It is case sensitive."
+        
+        self.image = Image.open(image_path)
+        self.photo = ImageTk.PhotoImage(self.image)
+        self.image_label = tk.Label(self, image=self.photo)
+        self.image_label.grid(row=0, column=0, padx=10, pady=10, rowspan=2)
+        
+        self.label_text = tk.StringVar()
+        self.label_text.set(text)
+        self.label = tk.Label(self, textvariable=self.label_text, justify='center')
+        self.label.grid(row=0, column=1, columnspan=2, padx=10, pady=10)
+        
+        self.entry_text = tk.StringVar()
+        self.entry = tk.Entry(self, textvariable=self.entry_text)
+        self.entry.grid(row=1, column=1, padx=10, pady=10)
+        
+        self.button = tk.Button(self, text="Submit Command", command=self.submit)
+        self.button.grid(row=1, column=2, padx=10, pady=10)
+
+    def submit(self):
+        global currentRoom
+        global er
+        global cr
+        global TimeTillEnd
+        global GrabedItems
+        
+        if TimeTillEnd==0:
+            Finale()
+        direction = self.entry_text.get()
+        if direction == "North":
+            currentRoom[0] -= 1
+            TimeTillEnd -= 1
+        elif direction == "South":
+            currentRoom[0] += 1
+            TimeTillEnd -= 1
+        elif direction == "East":
+            currentRoom[1] += 1
+            TimeTillEnd -= 1
+        elif direction == "West":
+            currentRoom[1] -= 1
+            TimeTillEnd -= 1
+
+        if currentRoom[0] == 4:
+            currentRoom[0] = 1
+        elif currentRoom[0] == 0:
+            currentRoom[0] = 3
+        if currentRoom[1] == 3:
+            currentRoom[1] = 1
+        elif currentRoom[1] == 0:
+            currentRoom[1] = 2
+
+        cr = er[currentRoom[0] - 1][currentRoom[1] - 1]
+        self.image = Image.open(cr.imagePath)
+        self.photo = ImageTk.PhotoImage(self.image)
+        self.image_label.config(image=self.photo)
+        if direction==cr.items[0]:
+            item_description = cr.items[1]
+            popup = ItemPopup(self, direction, item_description)
+            popup.focus_set()
+        if direction in cr.grabbables:
+            GrabedItems.append(direction)
+            cr.grabbables.remove(direction)
+            cr.grabbables.append("Nothing")
+            er[currentRoom[0] - 1][currentRoom[1] - 1].grabItem(direction)
+            cr.grabItem(direction)
+            grab_popup = ItemPopup(self, "Item Grabbed", f"You grabbed the {direction}")
+            grab_popup.focus_set()
+        self.label_text.set("\nYou are in " + cr.name +
+                        "\nYou can go North, South, East, or West" +
+                        f"\nYou can grab {', '.join(cr.grabbables)}" +
+                        f"\nYou can look at {cr.items[0]}\n \n" +
+                        "Just type what you want to do, if you want to move type the direction,\n if you want to look at something or grab it type in the object. \n It is case sensitive.")
+        self.title("Hour of Trial - " + str(TimeTillEnd) + " -")
+
+class Room:
+    def __init__(self, name, exits, items, grabbables, imagePath):
+        self.name = name
+        self.exits = exits
+        self.items = items
+        self.grabbables = grabbables
+        self.imagePath = imagePath
+
+    def grabItem(self, item_name):
+        if item_name in self.items:
+            item_description = self.grabbables[item_name]
+
+def Finale():
+    x.destroy()
+
+    finale_window = tk.Tk()
+    finale_window.title("Game Over")
+
+    finale_image = Image.open("Finale_Image.png")
+    finale_frames = [ImageTk.PhotoImage(frame) for frame in ImageSequence.Iterator(finale_image)]
+    finale_image_label = tk.Label(finale_window)
+    finale_image_label.pack()
+
+    def update_image(idx=0):
+        frame = finale_frames[idx]
+        finale_image_label.config(image=frame)
+        idx += 1
+        if idx < len(finale_frames):
+            finale_window.after(100, update_image, idx)
+
+    update_image()
+
+    message_text = "You.....\nWhat- Who am I...\n...\nAnswer me or die..."
+    message_label = tk.Label(finale_window, text=message_text, font=("Helvetica", 12))
+    message_label.pack()
+
+    guess_var = tk.StringVar()
+    guess_entry = tk.Entry(finale_window, textvariable=guess_var)
+    guess_entry.pack()
+
+    def check_guess(guess):
+        global GrabedItems
+        print(GrabedItems)
+        if guess.lower() == "the husband":
+            if 'Envelope' in GrabedItems and "Obsidian Key" not in GrabedItems:
+                win_message = "Congratulations! You win!"
+                gif_file = "You Survived.gif"
+                sound_file = "EchoSound.mp3"
+            else:
+                win_message = "Sorry, you didn't meet the conditions to win."
+                gif_file = "You Died.gif"
+                sound_file = "EchoSound.mp3"
+        else:
+            win_message = "Sorry, incorrect guess. You didn't win."
+            gif_file = "You Died.gif"
+            sound_file = "EchoSound.mp3"
+
+        finale_window.destroy()
+
+        result_window = tk.Tk()
+        result_window.title("Game Result")
+
+        result_gif = Image.open(gif_file)
+        result_frames = [ImageTk.PhotoImage(frame) for frame in ImageSequence.Iterator(result_gif)]
+        result_image_label = tk.Label(result_window)
+        result_image_label.pack()
+
+        def update_result_image(idx=0):
+            frame = result_frames[idx]
+            result_image_label.config(image=frame)
+            idx += 1
+            if idx < len(result_frames):
+                result_window.after(100, update_result_image, idx)
+
+        update_result_image()
+
+        pygame.mixer.music.load(sound_file)
+        pygame.mixer.music.play()
+
+        result_window.after(20000, sys.exit)  # Stop the program after 20 seconds
+
+        result_window.mainloop()
+
+    check_button = tk.Button(finale_window, text="Answer", command=lambda: check_guess(guess_var.get()))
+    check_button.pack()
+
+    finale_window.mainloop()
+    
+
+r11 = Room("Bedroom", ["North", "South", "East", "West"], ["Letter", "Dear Ester my loving wife, I am afraid that it came. \n It took the only thing left i had to remember you by..."], ["Envelope"], "1-1.png")
+r12 = Room("Furnace Room", ["North", "South", "East", "West"], ["Coal", "An oldly shappen peice of coal. \n It looks almost like a sleeping dragon."], ["Obsidian Key"], "1-2.png")
+r21 = Room("Kitchen", ["North", "South", "East", "West"], ["Knife", "A knife coated in blood."], ["Apple"], "2-1.png")
+r22 = Room("Hall", ["North", "South", "East", "West"], ["Drawer", "Inside is a pickture. The frame is shattered, \n and the only thing visible in it is a smiling male figure."], ["Picture"], "2-2.png")
+r31 = Room("Dinning Room", ["North", "South", "East", "West"], ["Letter", "Dear Ester, I am weary, and don't think I can hold on much longer. \n It looks so grand, and I feel draw to the cold metal. \n The keys are affecting me, and I think the dark on wants me to d-"], ["Envelope"], "3-1.png")
+r32 = Room("Entrance Room", ["North", "South", "East", "West"], ["Key", "A metal key, with a golden tint, melded into the clock."], ["Envelope"], "3-2.png")
+
+cr = r32
+er = [[r11, r12], [r21, r22], [r31, r32]]
+
+currentRoom = [3,2]
+image = cr.imagePath
+x = GUI(image)
+x.mainloop()
