@@ -1,3 +1,4 @@
+
 ###############################################
 # Name: Justin Denison
 # Date: 3/30/24 (final)
@@ -181,17 +182,28 @@ class Game(Frame):
         r3.addItem("desk", "it has a drawer that needs to be unlocked")
         r4.addItem("brewrig", "it is here for some reason, I guess")
         r4.addItem("chest", "it seems to be a locked chest")
+        r2.addItem("medical_equipment", "old equipement from medical experiments")
+        r5.addItem("wheelchair", "the wheels squeak eerily as you push it")
+        r11.addItem("pill_bottles", "labels are faded and contents long gone")
+        r12.addItem("scrathced_window", "from here, doctors once observed the patients' behavior")
+        r14.addItem("floor_stain", "dark and red probably remanents of an experiment")
+        r16.addItem("broken_restraints", "leather straps hang loosely broken in an experiment")
+        r17.addItem("experiment_files", "piles of paperworkabout old patients")
+        #can find info in here
+        r20.addItem("gurney", "its wheels squeal as you move it")
+        r23.addItem("rusty_tools", "a testament of past experiments, they are oddly red tinted ")
+        
         r1.addItem("diary1",
                    "4/2/22\n\nI had an idea. After my late brother's passing from the 'mystery disease' deathicitis I knew I had to find a solution. The only problem was a lack of patients to test my solution on and experiment with. I have so far been able to capture a few. They usually fight but its nothing I cant handle.\n\nDr. Zonderstrom")
-        r1.addItem("diary2",
+        r17.addItem("diary2",
                    "4/30/22\n\nI cannot believe I did not think of this sooner! I have made a lot of progress in finding a cure. I must admit at first the screams got to me a little bit but it is all in the name of Science! I am thinking of ramping up testing to speed up time to find a cure.\n\nDr. Zonderstrom")
-        r1.addItem("diary3",
+        r23.addItem("diary3",
                    "5/13/22\n\nI have hit a bit of a wall. I saw massive progress at first but in my latest test (No. 67) it seems the cure stops the disease temporarily but doesnt totally cure it. The only way onward is to further test. Its all in the name of my brother. I hate to admit it but I am not even bothered by the testing process anymore. Desensitization is an interesting phenomenon.\n\nDr. Zonderstrom")
-        r1.addItem("diary4",
+        r7.addItem("diary4",
                    "6/3/22\n\nI had to ramp up work a lot but I was able to crack the problem! In trial No. 115 I tried applying the solution all at once and not over a gradual time period and it led to a complete cure of the disease! The only downside to this is that it causes severe memory loss and immenent death hours after waking up. I am currently working to solve this.\n\nDr. Zonderstrom")
-        r1.addItem("diary5",
+        r12.addItem("diary5",
                    "6/21/24\n\nStill no cure. I have begun to get headaches from the work load. I do not know if it is some form of karma for my actions. Many people have died in my experiments so far (No. 143 currently), however it is all for the greater good. If only people would understand thsi is the only way to further push science! We cannot be weak willed and allow ourselves to be bested!\n\nDr. Zonderstrom")
-        r1.addItem("diary6",
+        r16.addItem("diary6",
                    "7/3/24\n\nI have realized that I am unfortunatleuy ailed by the same illness that took my brother and that I dedicated myself to solving. All before perfecting the cure. This will most likley be my last entry due to death after I risk the medicine on my own body. It is my only hope to survive. If you are reading these then I am probably one of the numerous bodies surrounding the labs. I wouldve like to have been remembered, but I do not think the world would take kindly to my experiments. I will leave my medical ID here as proof of my work and testament to my life. It might help you to identify me.\n\nDr. Zonderstrom\n\n\n-------------------------------\n-                             -\n- medical identification card -\n-                             -\n- name: Dr Jack Zonderstrom   -\n-                             -\n- director of pathology       -\n-                             -\n-------------------------------")
 
         r1.addGrabbable("key")
