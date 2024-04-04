@@ -1,14 +1,3 @@
-
-###############################################
-# Name: Justin Denison
-# Date: 3/30/24 (final)
-# A game with many rooms and a puzzle
-# Instructions:
-#   1. take key and go to room 4 to interact with chest
-#   2. go to room 3 to interact with statue
-#   3. go to room 2 to inteact with fireplace
-#################################################
-
 import pygame
 from tkinter import *
 
