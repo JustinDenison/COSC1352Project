@@ -13,7 +13,7 @@ from tkinter import *
 
 pygame.init()
 pygame.mixer.init()
-pygame.mixer.music.load('PsycBGM.mp3')
+pygame.mixer.music.load('PsycWard.mp3')
 pygame.mixer.music.play(-1)
 
 # Class representing a room in the game
