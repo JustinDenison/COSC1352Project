@@ -11,6 +11,7 @@
 
 from tkinter import *
 
+
 # Class representing a room in the game
 class Room(object):
     def __init__(self, name, image):
@@ -94,6 +95,7 @@ class Room(object):
             s += exit + " "
         return s
 
+
 # Class representing the game
 class Game(Frame):
     def __init__(self, parent):
@@ -111,7 +113,7 @@ class Game(Frame):
         r8 = Room("Room 8", "room8.png")
         r9 = Room("Room 9", "room9.png")
         r10 = Room("Room 10", "room10.png")
-        r11 = Room("Room 11", "room11.png") 
+        r11 = Room("Room 11", "room11.png")
         r12 = Room("Room 12", "room12.png")
         r13 = Room("Room 13", "room13.png")
         r14 = Room("Room 14", "room14.png")
@@ -126,15 +128,15 @@ class Game(Frame):
         r23 = Room("Room 23", "room23.png")
         r24 = Room("Room 24", "room24.png")
         r1.addExit("north", r2)
-        r2.addExit("north" , r3)
-        r3.addExit("north" , r4)
+        r2.addExit("north", r3)
+        r3.addExit("north", r4)
         r3.addExit("east", r17)
-        r4.addExit("north" , r5)
+        r4.addExit("north", r5)
         r5.addExit("north", r6)
         r6.addExit("east", r7)
         r7.addExit("east", r8)
-        r8.addExit("east" , r9)
-        r9.addExit("east" , r10)
+        r8.addExit("east", r9)
+        r9.addExit("east", r10)
         r10.addExit("east", r11)
         r11.addExit("south", r12)
         r12.addExit("south", r13)
@@ -142,26 +144,30 @@ class Game(Frame):
         r14.addExit("south", r15)
         r14.addExit("west", r24)
         r15.addExit("south", r16)
+        r16.addExit("north", r15)
+        r17.addExit("east", r20)
+        r17.addExit("west", r3)
+        r18.addExit("south", r20)
+        r18.addExit("east", r19)
+        r19.addExit("south", r21)
+        r19.addExit("west", r18)
         r24.addExit("west", r21)
+        r24.addExit("east", r14)
         r21.addExit("north", r19)
-        r21.addExit("south" ,r23)
+        r21.addExit("south", r23)
         r21.addExit("west", r20)
+        r21.addExit("east", r24)
         r20.addExit("north", r18)
         r20.addExit("south", r22)
         r20.addExit("west", r17)
-        
-        
-        
-        
+        r20.addExit("east", r21)
+        r22.addExit("north", r20)
+        r22.addExit("east", r23)
+        r23.addExit("north", r21)
+        r23.addExit("west", r22)
 
-        
-        
-        
 
-        r3.addExit("north", r1)
-        r3.addExit("east", r4)
-        r4.addExit("west", r3)
-        r4.addExit("north", r2)
+
         r1.addItem("chair", "it looks uncomfortable")
         r1.addItem("table", "it looks very sturdy")
         r2.addItem("rug", "it looks very old and recently moved")
@@ -171,13 +177,19 @@ class Game(Frame):
         r3.addItem("desk", "it has a drawer that needs to be unlocked")
         r4.addItem("brewrig", "it is here for some reason, I guess")
         r4.addItem("chest", "it seems to be a locked chest")
-        r1.addItem("diary1", "4/2/22\n\nI had an idea. After my late brother's passing from the 'mystery disease' deathicitis I knew I had to find a solution. The only problem was a lack of patients to test my solution on and experiment with. I have so far been able to capture a few. They usually fight but its nothing I cant handle.\n\nDr. Zonderstrom")
-        r1.addItem("diary2", "4/30/22\n\nI cannot believe I did not think of this sooner! I have made a lot of progress in finding a cure. I must admit at first the screams got to me a little bit but it is all in the name of Science! I am thinking of ramping up testing to speed up time to find a cure.\n\nDr. Zonderstrom")
-        r1.addItem("diary3", "5/13/22\n\nI have hit a bit of a wall. I saw massive progress at first but in my latest test (No. 67) it seems the cure stops the disease temporarily but doesnt totally cure it. The only way onward is to further test. Its all in the name of my brother. I hate to admit it but I am not even bothered by the testing process anymore. Desensitization is an interesting phenomenon.\n\nDr. Zonderstrom")
-        r1.addItem("diary4", "6/3/22\n\nI had to ramp up work a lot but I was able to crack the problem! In trial No. 115 I tried applying the solution all at once and not over a gradual time period and it led to a complete cure of the disease! The only downside to this is that it causes severe memory loss and immenent death hours after waking up. I am currently working to solve this.\n\nDr. Zonderstrom")
-        r1.addItem("diary5", "6/21/24\n\nStill no cure. I have begun to get headaches from the work load. I do not know if it is some form of karma for my actions. Many people have died in my experiments so far (No. 143 currently), however it is all for the greater good. If only people would understand thsi is the only way to further push science! We cannot be weak willed and allow ourselves to be bested!\n\nDr. Zonderstrom")
-        r1.addItem("diary6", "7/3/24\n\nI have realized that I am unfortunatleuy ailed by the same illness that took my brother and that I dedicated myself to solving. All before perfecting the cure. This will most likley be my last entry due to death after I risk the medicine on my own body. It is my only hope to survive. If you are reading these then I am probably one of the numerous bodies surrounding the labs. I wouldve like to have been remembered, but I do not think the world would take kindly to my experiments. I will leave my medical ID here as proof of my work and testament to my life. It might help you to identify me.\n\nDr. Zonderstrom\n\n\n-------------------------------\n-                             -\n- medical identification card -\n-                             -\n- name: Dr Jack Zonderstrom   -\n-                             -\n- director of pathology       -\n-                             -\n-------------------------------")
-        
+        r1.addItem("diary1",
+                   "4/2/22\n\nI had an idea. After my late brother's passing from the 'mystery disease' deathicitis I knew I had to find a solution. The only problem was a lack of patients to test my solution on and experiment with. I have so far been able to capture a few. They usually fight but its nothing I cant handle.\n\nDr. Zonderstrom")
+        r1.addItem("diary2",
+                   "4/30/22\n\nI cannot believe I did not think of this sooner! I have made a lot of progress in finding a cure. I must admit at first the screams got to me a little bit but it is all in the name of Science! I am thinking of ramping up testing to speed up time to find a cure.\n\nDr. Zonderstrom")
+        r1.addItem("diary3",
+                   "5/13/22\n\nI have hit a bit of a wall. I saw massive progress at first but in my latest test (No. 67) it seems the cure stops the disease temporarily but doesnt totally cure it. The only way onward is to further test. Its all in the name of my brother. I hate to admit it but I am not even bothered by the testing process anymore. Desensitization is an interesting phenomenon.\n\nDr. Zonderstrom")
+        r1.addItem("diary4",
+                   "6/3/22\n\nI had to ramp up work a lot but I was able to crack the problem! In trial No. 115 I tried applying the solution all at once and not over a gradual time period and it led to a complete cure of the disease! The only downside to this is that it causes severe memory loss and immenent death hours after waking up. I am currently working to solve this.\n\nDr. Zonderstrom")
+        r1.addItem("diary5",
+                   "6/21/24\n\nStill no cure. I have begun to get headaches from the work load. I do not know if it is some form of karma for my actions. Many people have died in my experiments so far (No. 143 currently), however it is all for the greater good. If only people would understand thsi is the only way to further push science! We cannot be weak willed and allow ourselves to be bested!\n\nDr. Zonderstrom")
+        r1.addItem("diary6",
+                   "7/3/24\n\nI have realized that I am unfortunatleuy ailed by the same illness that took my brother and that I dedicated myself to solving. All before perfecting the cure. This will most likley be my last entry due to death after I risk the medicine on my own body. It is my only hope to survive. If you are reading these then I am probably one of the numerous bodies surrounding the labs. I wouldve like to have been remembered, but I do not think the world would take kindly to my experiments. I will leave my medical ID here as proof of my work and testament to my life. It might help you to identify me.\n\nDr. Zonderstrom\n\n\n-------------------------------\n-                             -\n- medical identification card -\n-                             -\n- name: Dr Jack Zonderstrom   -\n-                             -\n- director of pathology       -\n-                             -\n-------------------------------")
+
         r1.addGrabbable("key")
         r3.addGrabbable("book")
         r4.addGrabbable("beverage")
@@ -224,7 +236,8 @@ class Game(Frame):
             Game.text.insert(END, "You are dead")
         else:
             possible_actions = "Hints: \nYou can type: \ngo direction \ndirection = south, north, east, west \nlook item \nitem = check 'you see' \ntake grabbable \ngrabbable = see 'you can carry'"
-            Game.text.insert(END, str(Game.currentRoom) + "\nYou are carrying: " + str(Game.inventory) + "\n\n" + status + "\n\n\n" + possible_actions)
+            Game.text.insert(END, str(Game.currentRoom) + "\nYou are carrying: " + str(
+                Game.inventory) + "\n\n" + status + "\n\n\n" + possible_actions)
             Game.text.config(state=DISABLED)
 
     # Method to start playing the game
@@ -295,7 +308,6 @@ class Game(Frame):
         self.setStatus(response)
         self.setRoomImage()
         Game.player_input.delete(0, END)
-
 
 
 ######################MAIN#########################
