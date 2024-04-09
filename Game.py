@@ -1,5 +1,17 @@
+
+###############################################
+# Name: Justin Denison, Pete Schellingerhout, John Auman
+# Date: 3/30/24 (final)
+# A game with many rooms and a puzzle
+# Instructions:
+#   1. take key and go to room 4 to interact with chest
+#   2. go to room 3 to interact with statue
+#   3. go to room 2 to inteact with fireplace
+#################################################
+
 import pygame
 from tkinter import *
+import json
 
 pygame.init()
 pygame.mixer.init()
@@ -96,136 +108,40 @@ class Game(Frame):
         Frame.__init__(self, parent)
 
     # Method to create rooms in the game
+    # Method to create rooms in the game
     def createRooms(self):
-        r1 = Room("Room 1", "room1.png")
-        r2 = Room("Room 2", "room2.png")
-        r3 = Room("Room 3", "room3.png")
-        r4 = Room("Room 4", "room4.png")
-        r5 = Room("Room 5", "room5.png")
-        r6 = Room("Room 6", "room6.png")
-        r7 = Room("Room 7", "room7.png")
-        r8 = Room("Room 8", "room8.png")
-        r9 = Room("Room 9", "room9.png")
-        r10 = Room("Room 10", "room10.png")
-        r11 = Room("Room 11", "room11.png")
-        r12 = Room("Room 12", "room12.png")
-        r13 = Room("Room 13", "room13.png")
-        r14 = Room("Room 14", "room14.png")
-        r15 = Room("Room 15", "room15.png")
-        r16 = Room("Room 16", "room16.png")
-        r17 = Room("Room 17", "room17.png")
-        r18 = Room("Room 18", "room18.png")
-        r19 = Room("Room 19", "room19.png")
-        r20 = Room("Room 20", "room20.png")
-        r21 = Room("Room 21", "room21.png")
-        r22 = Room("Room 22", "room22.png")
-        r23 = Room("Room 23", "room23.png")
-        r24 = Room("Room 24", "room24.png")
-        r1.addExit("north", r2)
-        r2.addExit("north", r3)
-        r3.addExit("north", r4)
-        r3.addExit("east", r17)
-        r4.addExit("north", r5)
-        r5.addExit("north", r6)
-        r6.addExit("east", r7)
-        r7.addExit("east", r8)
-        r8.addExit("east", r9)
-        r9.addExit("east", r10)
-        r10.addExit("east", r11)
-        r11.addExit("south", r12)
-        r12.addExit("south", r13)
-        r13.addExit("south", r14)
-        r14.addExit("south", r15)
-        r14.addExit("west", r24)
-        r15.addExit("south", r16)
-        r16.addExit("north", r15)
-        r17.addExit("east", r20)
-        r17.addExit("west", r3)
-        r18.addExit("south", r20)
-        r18.addExit("east", r19)
-        r19.addExit("south", r21)
-        r19.addExit("west", r18)
-        r24.addExit("west", r21)
-        r24.addExit("east", r14)
-        r21.addExit("north", r19)
-        r21.addExit("south", r23)
-        r21.addExit("west", r20)
-        r21.addExit("east", r24)
-        r20.addExit("north", r18)
-        r20.addExit("south", r22)
-        r20.addExit("west", r17)
-        r20.addExit("east", r21)
-        r22.addExit("north", r20)
-        r22.addExit("east", r23)
-        r23.addExit("north", r21)
-        r23.addExit("west", r22)
+        with open('rooms.json') as f:
+            data = json.load(f)
 
+        rooms_data = data['rooms']
 
+        rooms = {}
+        for room_data in rooms_data:
+            room = Room(room_data['name'], room_data['image'])
+            room.exits = room_data.get('exits', {})
+            room.items = room_data.get('items', {})
+            room.grabbables = room_data.get('grabbables', [])
 
-        r1.addItem("chair", "it looks uncomfortable")
-        r1.addItem("table", "it looks very sturdy")
-        r2.addItem("rug", "it looks very old and recently moved")
-        r2.addItem("fireplace", "it provides a nice warm atmosphere")
-        r3.addItem("bookshelf", "it has many random books on it and some big ones that stand out")
-        r3.addItem("statue", "it is small and seems to be hollow?")
-        r3.addItem("desk", "it has a drawer that needs to be unlocked")
-        r4.addItem("brewrig", "it is here for some reason, I guess")
-        r4.addItem("chest", "it seems to be a locked chest")
-        r2.addItem("medical_equipment", "old equipement from medical experiments")
-        r5.addItem("wheelchair", "the wheels squeak eerily as you push it")
-        r11.addItem("pill_bottles", "labels are faded and contents long gone")
-        r12.addItem("scrathced_window", "from here, doctors once observed the patients' behavior")
-        r14.addItem("floor_stain", "dark and red probably remanents of an experiment")
-        r16.addItem("broken_restraints", "leather straps hang loosely broken in an experiment")
-        r17.addItem("experiment_files", "piles of paperworkabout old patients")
-        #can find info in here
-        r20.addItem("gurney", "its wheels squeal as you move it")
-        r23.addItem("rusty_tools", "a testament of past experiments, they are oddly red tinted ")
+            # Check if there's a diary item, and if so, read its content from the file
+            for item, desc in room.items.items():
+                if item.startswith("diary"):
+                    diary_number = item.split("diary")[1]
+                    with open(f"diary{diary_number}.txt", "r") as f:
+                        diary_content = f.read()
+                    room.items[item] = diary_content.strip()  # Set the content of the diary
 
-        f = open("diary1.txt", "r")
-        lines = f.readlines()
-        f.close()
-        desc = ''.join(lines)
-        r1.addItem("diary1", desc)
+            rooms[room.name] = room
 
-        f = open("diary2.txt", "r")
-        lines = f.readlines()
-        f.close()
-        desc = ''.join(lines)
-        r17.addItem("diary2", desc)
+        # Link exits
+        for room_data in rooms_data:
+            room = rooms[room_data['name']]
+            for exit_dir, exit_room_name in room_data.get('exits', {}).items():
+                room.addExit(exit_dir, rooms[exit_room_name])
 
-        f = open("diary3.txt", "r")
-        lines = f.readlines()
-        f.close()
-        desc = ''.join(lines)
-        r23.addItem("diary3", desc)
-
-        f = open("diary4.txt", "r")
-        lines = f.readlines()
-        f.close()
-        desc = ''.join(lines)
-        r7.addItem("diary4", desc)
-
-        f = open("diary5.txt", "r")
-        lines = f.readlines()
-        f.close()
-        desc = ''.join(lines)
-        r12.addItem("diary5", desc)
-
-        f = open("diary6.txt", "r")
-        lines = f.readlines()
-        f.close()
-        desc = ''.join(lines)
-        r16.addItem("diary6", desc)
-
-        r1.addGrabbable("key")
-        r3.addGrabbable("book")
-        r4.addGrabbable("beverage")
-
-        Game.currentRoom = r1
+        # Set initial room
+        Game.currentRoom = rooms['Room 1']
         Game.inventory = []
 
-    # Method to set up the graphical user interface
     def setupGUI(self):
         self.pack(fill=BOTH, expand=1)
         Game.player_input = Entry(self, bg="white")
