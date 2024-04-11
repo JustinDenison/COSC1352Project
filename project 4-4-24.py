@@ -236,7 +236,6 @@ def handle_button(channel):
 
     g.process(action)
 
-
 WIDTH = 1600
 HEIGHT = 1200
 
