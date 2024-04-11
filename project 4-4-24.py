@@ -163,6 +163,22 @@ class Game(Frame):
         self.setupGUI()
         self.setRoomImage()
         self.setStatus("")
+        GPIO.add_event_detect(25, GPIO.RISING, callback=lambda _: handle_button(25), bouncetime=300)
+        GPIO.add_event_detect(24, GPIO.RISING, callback=lambda _: handle_button(24), bouncetime=300)
+        GPIO.add_event_detect(23, GPIO.RISING, callback=lambda _: handle_button(23), bouncetime=300)
+        GPIO.add_event_detect(26, GPIO.RISING, callback=lambda _: handle_button(26), bouncetime=300)
+        buttonstate1 = GPIO.input(25)
+        buttonstate2 = GPIO.input(24)
+        buttonstate3 = GPIO.input(23)
+        buttonstate4 = GPIO.input(26)
+        if not buttonstate1:
+            handleButton(25)
+        if not buttonstate2:
+            handleButton(24)
+        if not buttonstate3:
+            handleButton(23)
+        if not buttonstate4:
+            handleButton(26)
 
     def process(self, event):
         action = Game.player_input.get()
@@ -223,7 +239,8 @@ class Game(Frame):
         self.setRoomImage()
         Game.player_input.delete(0, END)
 
-def handle_button(channel):
+
+def handleButton(channel):
     action = ""
     if channel == 25:
         action = "go north"
@@ -236,14 +253,17 @@ def handle_button(channel):
 
     g.process(action)
 
+
 WIDTH = 1600
 HEIGHT = 1200
 
 window = Tk()
 window.title("Room Adventure")
 
-g = Game(window)
-g.play()
+North = 25
+East = 24
+South = 23
+West = 26
 
 GPIO.setmode(GPIO.BCM)
 GPIO.setup(25, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
@@ -251,9 +271,8 @@ GPIO.setup(24, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
 GPIO.setup(23, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
 GPIO.setup(26, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
 
-GPIO.add_event_detect(25, GPIO.RISING, callback=lambda _: handle_button(25), bouncetime=300)
-GPIO.add_event_detect(24, GPIO.RISING, callback=lambda _: handle_button(24), bouncetime=300)
-GPIO.add_event_detect(23, GPIO.RISING, callback=lambda _: handle_button(23), bouncetime=300)
-GPIO.add_event_detect(26, GPIO.RISING, callback=lambda _: handle_button(26), bouncetime=300)
+g = Game(window)
+g.play()
+
 
 window.mainloop()
