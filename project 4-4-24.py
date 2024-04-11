@@ -223,7 +223,6 @@ class Game(Frame):
         self.setRoomImage()
         Game.player_input.delete(0, END)
 
-
 def handle_button(channel):
     action = ""
     if channel == 25:
