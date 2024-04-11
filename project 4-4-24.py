@@ -163,22 +163,17 @@ class Game(Frame):
         self.setupGUI()
         self.setRoomImage()
         self.setStatus("")
-        GPIO.add_event_detect(25, GPIO.RISING, callback=lambda _: handle_button(25), bouncetime=300)
-        GPIO.add_event_detect(24, GPIO.RISING, callback=lambda _: handle_button(24), bouncetime=300)
-        GPIO.add_event_detect(23, GPIO.RISING, callback=lambda _: handle_button(23), bouncetime=300)
-        GPIO.add_event_detect(26, GPIO.RISING, callback=lambda _: handle_button(26), bouncetime=300)
-        buttonstate1 = GPIO.input(25)
-        buttonstate2 = GPIO.input(24)
-        buttonstate3 = GPIO.input(23)
-        buttonstate4 = GPIO.input(26)
-        if not buttonstate1:
-            handleButton(25)
-        if not buttonstate2:
-            handleButton(24)
-        if not buttonstate3:
-            handleButton(23)
-        if not buttonstate4:
-            handleButton(26)
+
+        while True:
+            buttonstate1 = GPIO.input(25)
+            buttonstate2 = GPIO.input(24)
+            buttonstate3 = GPIO.input(23)
+            buttonstate4 = GPIO.input(26)
+
+            if not buttonstate1 or not buttonstate2 or not buttonstate3 or not buttonstate4:
+                handleButton(buttonstate1, buttonstate2, buttonstate3, buttonstate4)
+            else:
+                window.update()
 
     def process(self, event):
         action = Game.player_input.get()
@@ -240,15 +235,15 @@ class Game(Frame):
         Game.player_input.delete(0, END)
 
 
-def handleButton(channel):
+def handleButton(buttonstate1, buttonstate2, buttonstate3, buttonstate4):
     action = ""
-    if channel == 25:
+    if not buttonstate1:
         action = "go north"
-    elif channel == 24:
+    elif not buttonstate2:
         action = "go east"
-    elif channel == 23:
+    elif not buttonstate3:
         action = "go south"
-    elif channel == 26:
+    elif not buttonstate4:
         action = "go west"
 
     g.process(action)
@@ -273,6 +268,5 @@ GPIO.setup(26, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
 
 g = Game(window)
 g.play()
-
 
 window.mainloop()
