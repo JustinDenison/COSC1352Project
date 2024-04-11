@@ -164,6 +164,65 @@ class Game(Frame):
         self.setRoomImage()
         self.setStatus("")
 
+    def process(self, event):
+        action = Game.player_input.get()
+        action = action.lower()
+        response = "I don't understand. Try verb noun. Valid verbs are go, look, take."
+        if (action == "quit" or action == "exit" or action == "bye" or action == "sionara"):
+            exit(0)
+        if (Game.currentRoom == None):
+            Game.player_input.delete(0, END)
+            return
+        words = action.split()
+        if (len(words) == 2):
+            verb = words[0]
+            noun = words[1]
+
+        done = False
+
+        if (verb == "go"):
+            response = "Invalid exit."
+
+            if (noun in Game.currentRoom.exits):
+                Game.currentRoom = Game.currentRoom.exits[noun]
+                response = "Room changed."
+        elif (verb == "look"):
+            response = "I don't see that item"
+            if (noun in Game.currentRoom.items):
+                response = Game.currentRoom.items[noun]
+        elif verb == "interact":
+            if noun in ["chair", "table", "rug", "brewrig"]:
+                response = Game.currentRoom.items[noun]
+            elif noun == "chest":
+                if "key" in Game.inventory and "hammer" not in Game.inventory:
+                    response = "Interesting! The key unlocked the chest and in it you found a hammer!"
+                    Game.inventory.append("hammer")
+                else:
+                    response = "The chest is locked."
+            elif noun == "statue":
+                if "hammer" in Game.inventory and "fire extinguisher" not in Game.inventory:
+                    response = "Interesting! The hammer smashed the statue and you found a fire extinguisher in it!"
+                    Game.inventory.append("fire extinguisher")
+                else:
+                    response = "The statue seems sturdy."
+            elif noun == "fireplace":
+                if "fire extinguisher" in Game.inventory:
+                    response = "You have extinguished the fireplace and escaped through a hidden door!"
+                    exit(0)
+                else:
+                    response = "The fireplace crackles warmly."
+        elif (verb == "take"):
+            response = "I don't see that item"
+            for grabbable in Game.currentRoom.grabbables:
+                if (noun == grabbable):
+                    Game.inventory.append(grabbable)
+                    Game.currentRoom.delGrabbable(grabbable)
+                    response = "Item grabbed"
+                    break
+        self.setStatus(response)
+        self.setRoomImage()
+        Game.player_input.delete(0, END)
+
 
 def handle_button(channel):
     action = ""
