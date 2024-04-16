@@ -17,7 +17,8 @@
       "name": "Room 2",
       "image": "room2.png",
       "exits": {
-        "north": "Room 3"
+        "north": "Room 3",
+	"south": "Room 1"
       },
       "items": {
         "rug": "it looks very old and recently moved",
@@ -31,7 +32,8 @@
       "image": "room3.png",
       "exits": {
         "north": "Room 4",
-        "east": "Room 17"
+        "east": "Room 17",
+	"south": "Room 2"
       },
       "items": {
         "bookshelf": "it has many random books on it and some big ones that stand out",
@@ -44,7 +46,8 @@
       "name": "Room 4",
       "image": "room4.png",
       "exits": {
-        "north": "Room 5"
+        "north": "Room 5",
+	"south": "Room 3"
       },
       "items": {
         "brewrig": "it is here for some reason, I guess",
@@ -56,7 +59,8 @@
       "name": "Room 5",
       "image": "room5.png",
       "exits": {
-        "north": "Room 6"
+        "north": "Room 6",
+	"south": "Room 4"
       },
       "items": {
         "wheelchair": "the wheels squeak eerily as you push it"
@@ -67,7 +71,8 @@
       "name": "Room 6",
       "image": "room6.png",
       "exits": {
-        "east": "Room 7"
+        "east": "Room 7",
+	"south": "Room 5"
       },
       "items": {},
       "grabbables": []
@@ -76,7 +81,8 @@
       "name": "Room 7",
       "image": "room7.png",
       "exits": {
-        "east": "Room 8"
+        "east": "Room 8",
+	"west": "Room 6"
       },
       "items": {},
       "grabbables": []
@@ -85,7 +91,8 @@
       "name": "Room 8",
       "image": "room8.png",
       "exits": {
-        "east": "Room 9"
+        "east": "Room 9",
+	"west": "Room 7"
       },
       "items": {},
       "grabbables": []
@@ -94,7 +101,8 @@
       "name": "Room 9",
       "image": "room9.png",
       "exits": {
-        "east": "Room 10"
+        "east": "Room 10",
+	"west": "Room 8"
       },
       "items": {},
       "grabbables": []
@@ -103,7 +111,8 @@
       "name": "Room 10",
       "image": "room10.png",
       "exits": {
-        "east": "Room 11"
+        "east": "Room 11",
+	"west": "Room 9"
       },
       "items": {},
       "grabbables": []
@@ -112,7 +121,8 @@
       "name": "Room 11",
       "image": "room11.png",
       "exits": {
-        "south": "Room 12"
+        "south": "Room 12",
+	"west": "Room 10"
       },
       "items": {
         "pill_bottles": "labels are faded and contents long gone"
@@ -123,7 +133,8 @@
       "name": "Room 12",
       "image": "room12.png",
       "exits": {
-        "south": "Room 13"
+        "south": "Room 13",
+	"north": "Room 11"
       },
       "items": {
         "scratched_window": "from here, doctors once observed the patients' behavior",
@@ -135,7 +146,8 @@
       "name": "Room 13",
       "image": "room13.png",
       "exits": {
-        "south": "Room 14"
+        "south": "Room 14",
+	"north": "Room 12"
       },
       "items": {},
       "grabbables": []
@@ -145,7 +157,8 @@
       "image": "room14.png",
       "exits": {
         "south": "Room 15",
-        "west": "Room 24"
+        "west": "Room 24",
+	"north": "Room 13"
       },
       "items": {
         "floor_stain": "dark and red probably remnants of an experiment",
@@ -157,7 +170,8 @@
       "name": "Room 15",
       "image": "room15.png",
       "exits": {
-        "south": "Room 16"
+        "south": "Room 16",
+	"north": "Room 14"
       },
       "items": {},
       "grabbables": []
@@ -242,7 +256,10 @@
         "north": "Room 20",
         "east": "Room 23"
       },
-      "items": {},
+      "items": {
+        "safe": "it seems to be locked and need a 6 digit code",
+        "sticky_note": "The numbers you desire can be found when it all began"
+      },
       "grabbables": []
     },
     {

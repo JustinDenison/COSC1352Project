@@ -192,6 +192,7 @@ class Game(Frame):
         self.setStatus("")
 
     # Method to process the player's input
+    # Method to process the player's input
     def process(self, event):
         action = Game.player_input.get()
         action = action.lower()
@@ -202,7 +203,7 @@ class Game(Frame):
             Game.player_input.delete(0, END)
             return
         words = action.split()
-        if (len(words) == 2):
+        if (len(words) >= 2):
             verb = words[0]
             noun = words[1]
 
@@ -210,7 +211,6 @@ class Game(Frame):
 
         if (verb == "go"):
             response = "Invalid exit."
-
             if (noun in Game.currentRoom.exits):
                 Game.currentRoom = Game.currentRoom.exits[noun]
                 response = "Room changed."
@@ -223,6 +223,15 @@ class Game(Frame):
             if noun in ["chair", "table", "rug", "brewrig"]:
                 response = Game.currentRoom.items[noun]
             # Handle specific interactions based on items and inventory
+            elif noun == "safe":
+                if len(words) == 3 and words[2] == "040222":
+                    response = "You opened the safe and found a diary!"
+                    if "diary3" not in Game.currentRoom.items:
+                        with open("diary3.txt", "r") as f:
+                            diary_content = f.read()
+                        Game.currentRoom.addItem("diary3", diary_content.strip())
+                else:
+                    response = "The safe requires a password."
             elif noun == "chest":
                 if "key" in Game.inventory and "hammer" not in Game.inventory:
                     response = "Interesting! The key unlocked the chest and in it you found a hammer!"
