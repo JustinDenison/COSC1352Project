@@ -1,0 +1,273 @@
+{
+  "rooms": [
+    {
+      "name": "Room 1",
+      "image": "room1.png",
+      "exits": {
+        "north": "Room 2"
+      },
+      "items": {
+        "chair": "it looks uncomfortable",
+        "table": "it looks very sturdy",
+        "diary1": "Contents of diary1"
+      },
+      "grabbables": ["key"]
+    },
+    {
+      "name": "Room 2",
+      "image": "room2.png",
+      "exits": {
+        "north": "Room 3"
+      },
+      "items": {
+        "rug": "it looks very old and recently moved",
+        "fireplace": "it provides a nice warm atmosphere",
+        "medical_equipment": "old equipment from medical experiments"
+      },
+      "grabbables": []
+    },
+    {
+      "name": "Room 3",
+      "image": "room3.png",
+      "exits": {
+        "north": "Room 4",
+        "east": "Room 17"
+      },
+      "items": {
+        "bookshelf": "it has many random books on it and some big ones that stand out",
+        "statue": "it is small and seems to be hollow?",
+        "desk": "it has a drawer that needs to be unlocked"
+      },
+      "grabbables": ["book"]
+    },
+    {
+      "name": "Room 4",
+      "image": "room4.png",
+      "exits": {
+        "north": "Room 5"
+      },
+      "items": {
+        "brewrig": "it is here for some reason, I guess",
+        "chest": "it seems to be a locked chest"
+      },
+      "grabbables": ["beverage"]
+    },
+    {
+      "name": "Room 5",
+      "image": "room5.png",
+      "exits": {
+        "north": "Room 6"
+      },
+      "items": {
+        "wheelchair": "the wheels squeak eerily as you push it"
+      },
+      "grabbables": []
+    },
+    {
+      "name": "Room 6",
+      "image": "room6.png",
+      "exits": {
+        "east": "Room 7"
+      },
+      "items": {},
+      "grabbables": []
+    },
+    {
+      "name": "Room 7",
+      "image": "room7.png",
+      "exits": {
+        "east": "Room 8"
+      },
+      "items": {},
+      "grabbables": []
+    },
+    {
+      "name": "Room 8",
+      "image": "room8.png",
+      "exits": {
+        "east": "Room 9"
+      },
+      "items": {},
+      "grabbables": []
+    },
+    {
+      "name": "Room 9",
+      "image": "room9.png",
+      "exits": {
+        "east": "Room 10"
+      },
+      "items": {},
+      "grabbables": []
+    },
+    {
+      "name": "Room 10",
+      "image": "room10.png",
+      "exits": {
+        "east": "Room 11"
+      },
+      "items": {},
+      "grabbables": []
+    },
+    {
+      "name": "Room 11",
+      "image": "room11.png",
+      "exits": {
+        "south": "Room 12"
+      },
+      "items": {
+        "pill_bottles": "labels are faded and contents long gone"
+      },
+      "grabbables": []
+    },
+    {
+      "name": "Room 12",
+      "image": "room12.png",
+      "exits": {
+        "south": "Room 13"
+      },
+      "items": {
+        "scratched_window": "from here, doctors once observed the patients' behavior",
+        "diary5": "Contents of Diary 5"
+      },
+      "grabbables": []
+    },
+    {
+      "name": "Room 13",
+      "image": "room13.png",
+      "exits": {
+        "south": "Room 14"
+      },
+      "items": {},
+      "grabbables": []
+    },
+    {
+      "name": "Room 14",
+      "image": "room14.png",
+      "exits": {
+        "south": "Room 15",
+        "west": "Room 24"
+      },
+      "items": {
+        "floor_stain": "dark and red probably remnants of an experiment",
+        "diary6": "Contents of Diary 6"
+      },
+      "grabbables": []
+    },
+    {
+      "name": "Room 15",
+      "image": "room15.png",
+      "exits": {
+        "south": "Room 16"
+      },
+      "items": {},
+      "grabbables": []
+    },
+    {
+      "name": "Room 16",
+      "image": "room16.png",
+      "exits": {
+        "north": "Room 15"
+      },
+      "items": {
+        "broken_restraints": "leather straps hang loosely broken in an experiment"
+      },
+      "grabbables": []
+    },
+    {
+      "name": "Room 17",
+      "image": "room17.png",
+      "exits": {
+        "east": "Room 20",
+        "west": "Room 3"
+      },
+      "items": {
+        "experiment_files": "piles of paperwork about old patients",
+        "diary2": "Contents of Diary 2"
+      },
+      "grabbables": []
+    },
+    {
+      "name": "Room 18",
+      "image": "room18.png",
+      "exits": {
+        "south": "Room 20",
+        "east": "Room 19"
+      },
+      "items": {},
+      "grabbables": []
+    },
+    {
+      "name": "Room 19",
+      "image": "room19.png",
+      "exits": {
+        "south": "Room 21",
+        "west": "Room 18"
+      },
+      "items": {},
+      "grabbables": []
+    },
+    {
+      "name": "Room 20",
+      "image": "room20.png",
+      "exits": {
+        "north": "Room 18",
+        "south": "Room 22",
+        "west": "Room 17",
+        "east": "Room 21"
+      },
+      "items": {
+        "gurney": "its wheels squeal as you move it"
+      },
+      "grabbables": []
+    },
+    {
+      "name": "Room 21",
+      "image": "room21.png",
+      "exits": {
+        "north": "Room 19",
+        "south": "Room 23",
+        "west": "Room 20",
+        "east": "Room 24"
+      },
+      "items": {
+        "rusty_tools": "a testament of past experiments, they are oddly red tinted",
+        "diary3": "Contents of diary 3"
+      },
+      "grabbables": []
+    },
+    {
+      "name": "Room 22",
+      "image": "room22.png",
+      "exits": {
+        "north": "Room 20",
+        "east": "Room 23"
+      },
+      "items": {},
+      "grabbables": []
+    },
+    {
+      "name": "Room 23",
+      "image": "room23.png",
+      "exits": {
+        "north": "Room 21",
+        "west": "Room 22"
+      },
+      "items": {
+        "rusty_tools": "a testament of past experiments, they are oddly red tinted"
+      },
+      "grabbables": []
+    },
+    {
+      "name": "Room 24",
+      "image": "room24.png",
+      "exits": {
+        "east": "Room 14",
+        "west": "Room 21"
+      },
+      "items": {
+        "diary4": "Contents of diary4"
+      },
+      "grabbables": []
+    }
+  ]
+}
