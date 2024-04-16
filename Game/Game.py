@@ -1,28 +1,6 @@
-import RPi.GPIO as GPIO
 import pygame
 from tkinter import *
 import json
-import time
-import threading
-
-pygame.init()
-pygame.mixer.init()
-pygame.mixer.music.load('PsycWard.mp3')
-pygame.mixer.music.play(-1)
-
-UP_PIN = 25
-DOWN_PIN = 24
-LEFT_PIN = 26
-RIGHT_PIN = 23
-INTERACT_PIN = 27
-
-GPIO.setmode(GPIO.BCM)
-
-GPIO.setup(UP_PIN, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
-GPIO.setup(DOWN_PIN, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
-GPIO.setup(LEFT_PIN, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
-GPIO.setup(RIGHT_PIN, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
-GPIO.setup(INTERACT_PIN, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
 
 # Class representing a room in the game
 class Room(object):
@@ -196,34 +174,10 @@ class Game(Frame):
         self.setupGUI()
         self.setRoomImage()
         self.setStatus("")
-        # Start GPIO monitoring thread
-        threading.Thread(target=self.monitorGPIO).start()
-
-    # Method to monitor GPIO pins for button presses
-    def monitorGPIO(self):
-        try:
-            while True:
-                if GPIO.input(UP_PIN) == GPIO.HIGH:
-                    self.process("go north")
-                    time.sleep(0.2)  # Debouncing delay
-                elif GPIO.input(DOWN_PIN) == GPIO.HIGH:
-                    self.process("go south")
-                    time.sleep(0.2)  # Debouncing delay
-                elif GPIO.input(LEFT_PIN) == GPIO.HIGH:
-                    self.process("go west")
-                    time.sleep(0.2)  # Debouncing delay
-                elif GPIO.input(RIGHT_PIN) == GPIO.HIGH:
-                    self.process("go east")
-                    time.sleep(0.2)  # Debouncing delay
-                elif GPIO.input(INTERACT_PIN) == GPIO.HIGH:
-                    self.process("interact")
-                    time.sleep(0.2)  # Debouncing delay
-
-        except KeyboardInterrupt:
-            GPIO.cleanup()
 
     # Method to process the player's input
-    def process(self, action):
+    def process(self, event):
+        action = Game.player_input.get()
         action = action.lower()
         response = "I don't understand. Try verb noun. Valid verbs are go, look, take."
         if (action == "quit" or action == "exit" or action == "bye" or action == "sionara"):
@@ -296,8 +250,9 @@ window.title("Room Adventure")
 
 # Create the GUI as a Tkinter canvas inside the window
 g = Game(window)
+
 # Play the game
 g.play()
 
-# Wait for the window to close
+# Setup GUI and main loop
 window.mainloop()
