@@ -1,6 +1,27 @@
 import pygame
 from tkinter import *
 import json
+import RPi.GPIO as GPIO
+
+# GPIO pins for directional movement and interaction
+UP_PIN = 25
+DOWN_PIN = 24
+LEFT_PIN = 26
+RIGHT_PIN = 23
+INTERACT_PIN = 27
+
+pygame.init()
+pygame.mixer.init()
+pygame.mixer.music.load('PsycWard.mp3')
+pygame.mixer.music.play(-1)
+
+# Set up GPIO
+GPIO.setmode(GPIO.BCM)
+GPIO.setup(UP_PIN, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
+GPIO.setup(DOWN_PIN, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
+GPIO.setup(LEFT_PIN, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
+GPIO.setup(RIGHT_PIN, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
+GPIO.setup(INTERACT_PIN, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
 
 # Class representing a room in the game
 class Room(object):
@@ -92,7 +113,6 @@ class Game(Frame):
         Frame.__init__(self, parent)
 
     # Method to create rooms in the game
-    # Method to create rooms in the game
     def createRooms(self):
         with open('rooms.json') as f:
             data = json.load(f)
@@ -174,6 +194,33 @@ class Game(Frame):
         self.setupGUI()
         self.setRoomImage()
         self.setStatus("")
+
+        # Set up GPIO event handlers
+        GPIO.add_event_detect(UP_PIN, GPIO.RISING, callback=self.up_button_pressed, bouncetime=200)
+        GPIO.add_event_detect(DOWN_PIN, GPIO.RISING, callback=self.down_button_pressed, bouncetime=200)
+        GPIO.add_event_detect(LEFT_PIN, GPIO.RISING, callback=self.left_button_pressed, bouncetime=200)
+        GPIO.add_event_detect(RIGHT_PIN, GPIO.RISING, callback=self.right_button_pressed, bouncetime=200)
+        GPIO.add_event_detect(INTERACT_PIN, GPIO.RISING, callback=self.interact_button_pressed, bouncetime=200)
+
+    # Method to handle UP button press
+    def up_button_pressed(self, channel):
+        self.process("go north")
+
+    # Method to handle DOWN button press
+    def down_button_pressed(self, channel):
+        self.process("go south")
+
+    # Method to handle LEFT button press
+    def left_button_pressed(self, channel):
+        self.process("go west")
+
+    # Method to handle RIGHT button press
+    def right_button_pressed(self, channel):
+        self.process("go east")
+
+    # Method to handle INTERACT button press
+    def interact_button_pressed(self, channel):
+        self.process("interact")
 
     # Method to process the player's input
     def process(self, event):
