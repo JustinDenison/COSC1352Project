@@ -9,6 +9,7 @@
 #   3. go to room 2 to inteact with fireplace
 #################################################
 
+import RPi.GPIO as GPIO
 import pygame
 from tkinter import *
 import json
@@ -17,6 +18,32 @@ pygame.init()
 pygame.mixer.init()
 pygame.mixer.music.load('PsycWard.mp3')
 pygame.mixer.music.play(-1)
+
+UP_PIN = 25
+DOWN_PIN = 24
+LEFT_PIN = 26
+RIGHT_PIN = 23
+INTERACT_PIN = 27
+
+GPIO.setmode(GPIO.BCM)
+
+GPIO.setup(UP_PIN, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
+GPIO.setup(DOWN_PIN, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
+GPIO.setup(LEFT_PIN, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
+GPIO.setup(RIGHT_PIN, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
+GPIO.setup(INTERACT_PIN, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
+
+def button_callback(channel):
+    if channel == UP_PIN:
+        g.process("go north")
+    elif channel == DOWN_PIN:
+        g.process("go south")
+    elif channel == LEFT_PIN:
+        g.process("go west")
+    elif channel == RIGHT_PIN:
+        g.process("go east")
+    elif channel == INTERACT_PIN:
+        g.process("interact")
 
 # Class representing a room in the game
 class Room(object):
@@ -106,6 +133,14 @@ class Room(object):
 class Game(Frame):
     def __init__(self, parent):
         Frame.__init__(self, parent)
+        self.setup_GPIO()
+
+    def setup_GPIO(self):
+        GPIO.add_event_detect(UP_PIN, GPIO.RISING, callback=button_callback, bouncetime=200)
+        GPIO.add_event_detect(DOWN_PIN, GPIO.RISING, callback=button_callback, bouncetime=200)
+        GPIO.add_event_detect(LEFT_PIN, GPIO.RISING, callback=button_callback, bouncetime=200)
+        GPIO.add_event_detect(RIGHT_PIN, GPIO.RISING, callback=button_callback, bouncetime=200)
+        GPIO.add_event_detect(INTERACT_PIN, GPIO.RISING, callback=button_callback, bouncetime=200)
 
     # Method to create rooms in the game
     # Method to create rooms in the game
