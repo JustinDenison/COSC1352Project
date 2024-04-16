@@ -2,6 +2,7 @@ import RPi.GPIO as GPIO
 import pygame
 from tkinter import *
 import json
+import time
 
 pygame.init()
 pygame.mixer.init()
@@ -21,18 +22,6 @@ GPIO.setup(DOWN_PIN, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
 GPIO.setup(LEFT_PIN, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
 GPIO.setup(RIGHT_PIN, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
 GPIO.setup(INTERACT_PIN, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
-
-def button_callback(channel):
-    if channel == UP_PIN:
-        g.process("go north")
-    elif channel == DOWN_PIN:
-        g.process("go south")
-    elif channel == LEFT_PIN:
-        g.process("go west")
-    elif channel == RIGHT_PIN:
-        g.process("go east")
-    elif channel == INTERACT_PIN:
-        g.process("interact")
 
 # Class representing a room in the game
 class Room(object):
@@ -122,14 +111,6 @@ class Room(object):
 class Game(Frame):
     def __init__(self, parent):
         Frame.__init__(self, parent)
-        self.setup_GPIO()
-
-    def setup_GPIO(self):
-        GPIO.add_event_detect(UP_PIN, GPIO.RISING, callback=button_callback, bouncetime=200)
-        GPIO.add_event_detect(DOWN_PIN, GPIO.RISING, callback=button_callback, bouncetime=200)
-        GPIO.add_event_detect(LEFT_PIN, GPIO.RISING, callback=button_callback, bouncetime=200)
-        GPIO.add_event_detect(RIGHT_PIN, GPIO.RISING, callback=button_callback, bouncetime=200)
-        GPIO.add_event_detect(INTERACT_PIN, GPIO.RISING, callback=button_callback, bouncetime=200)
 
     # Method to create rooms in the game
     # Method to create rooms in the game
@@ -203,7 +184,7 @@ class Game(Frame):
         if (Game.currentRoom == None):
             Game.text.insert(END, "You are dead")
         else:
-            possible_actions = "     Hints: \n	You can type: \n	-go direction \n	  -direction are: south, north, east, west \n	-look item \n	   -item = check 'you see' \n	-take grabbable \n	   -grabbable = see 'you can carry'"
+            possible_actions = "Hints: \nYou can type: \ngo direction \ndirection = south, north, east, west \nlook item \nitem = check 'you see' \ntake grabbable \ngrabbable = see 'you can carry'"
             Game.text.insert(END, str(Game.currentRoom) + "\nYou are carrying: " + str(
                 Game.inventory) + "\n\n" + status + "\n\n\n" + possible_actions)
             Game.text.config(state=DISABLED)
@@ -215,9 +196,30 @@ class Game(Frame):
         self.setRoomImage()
         self.setStatus("")
 
+        # Main loop for GPIO button presses
+        try:
+            while True:
+                if GPIO.input(UP_PIN) == GPIO.HIGH:
+                    self.process("go north")
+                    time.sleep(0.2)  # Debouncing delay
+                elif GPIO.input(DOWN_PIN) == GPIO.HIGH:
+                    self.process("go south")
+                    time.sleep(0.2)  # Debouncing delay
+                elif GPIO.input(LEFT_PIN) == GPIO.HIGH:
+                    self.process("go west")
+                    time.sleep(0.2)  # Debouncing delay
+                elif GPIO.input(RIGHT_PIN) == GPIO.HIGH:
+                    self.process("go east")
+                    time.sleep(0.2)  # Debouncing delay
+                elif GPIO.input(INTERACT_PIN) == GPIO.HIGH:
+                    self.process("interact")
+                    time.sleep(0.2)  # Debouncing delay
+
+        except KeyboardInterrupt:
+            GPIO.cleanup()
+
     # Method to process the player's input
-    def process(self, event):
-        action = Game.player_input.get()
+    def process(self, action):
         action = action.lower()
         response = "I don't understand. Try verb noun. Valid verbs are go, look, take."
         if (action == "quit" or action == "exit" or action == "bye" or action == "sionara"):
