@@ -3,6 +3,7 @@ import pygame
 from tkinter import *
 import json
 import time
+import threading
 
 pygame.init()
 pygame.mixer.init()
@@ -195,8 +196,11 @@ class Game(Frame):
         self.setupGUI()
         self.setRoomImage()
         self.setStatus("")
+        # Start GPIO monitoring thread
+        threading.Thread(target=self.monitorGPIO).start()
 
-        # Main loop for GPIO button presses
+    # Method to monitor GPIO pins for button presses
+    def monitorGPIO(self):
         try:
             while True:
                 if GPIO.input(UP_PIN) == GPIO.HIGH:
