@@ -192,6 +192,7 @@ class Game(Frame):
         self.setStatus("")
 
     # Method to process the player's input
+    # Method to process the player's input
     def process(self, event):
         action = Game.player_input.get()
         action = action.lower()
@@ -202,7 +203,7 @@ class Game(Frame):
             Game.player_input.delete(0, END)
             return
         words = action.split()
-        if (len(words) == 2):
+        if (len(words) >= 2):
             verb = words[0]
             noun = words[1]
 
@@ -210,7 +211,6 @@ class Game(Frame):
 
         if (verb == "go"):
             response = "Invalid exit."
-
             if (noun in Game.currentRoom.exits):
                 Game.currentRoom = Game.currentRoom.exits[noun]
                 response = "Room changed."
@@ -219,22 +219,30 @@ class Game(Frame):
             if (noun in Game.currentRoom.items):
                 response = Game.currentRoom.items[noun]
         elif verb == "interact":
-            # Check if the noun is interactable
-            if noun in ["chair", "table", "rug", "brewrig"]:
-                response = Game.currentRoom.items[noun]
-            # Handle specific interactions based on items and inventory
-            elif noun == "chest":
-                if "key" in Game.inventory and "hammer" not in Game.inventory:
-                    response = "Interesting! The key unlocked the chest and in it you found a hammer!"
-                    Game.inventory.append("hammer")
+            if noun == "safe":
+                if len(words) == 3 and words[2] == "040222":
+                    response = "You opened the safe and found a diary!"
+                    if "diary3" not in Game.currentRoom.items:
+                        with open("diary3.txt", "r") as f:
+                            diary_content = f.read()
+                        Game.currentRoom.addItem("diary3", diary_content.strip())
+                        Game.inventory.append("key3")
                 else:
-                    response = "The chest is locked."
-            elif noun == "statue":
-                if "hammer" in Game.inventory and "fire extinguisher" not in Game.inventory:
-                    response = "Interesting! The hammer smashed the statue and you found a fire extinguisher in it!"
-                    Game.inventory.append("fire extinguisher")
+                    response = "The safe requires a password."
+            elif noun == "bookshelf":
+                if "diary4" not in Game.currentRoom.items:
+                    with open("diary4.txt", "r") as f:
+                        diary_content = f.read()
+                    response = Game.currentRoom.items[noun]
+                    Game.inventory.append("key4")
                 else:
-                    response = "The statue seems sturdy."
+                    response = Game.currentRoom.items[noun]
+            elif noun == "diary1":
+                if "diary1" not in Game.inventory:
+                    response = Game.currentRoom.items[noun]
+                    Game.inventory.append("key1")
+                else:
+                    response = Game.currentRoom.items[noun]
             elif noun == "fireplace":
                 if "fire extinguisher" in Game.inventory:
                     response = "You have extinguished the fireplace and escaped through a hidden door!"
