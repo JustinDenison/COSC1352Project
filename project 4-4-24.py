@@ -133,42 +133,36 @@ class Game(Frame):
 
     def setupGUI(self):
         self.pack(fill=BOTH, expand=1)
-        Game.player_input = Entry(self, bg="white")
-        Game.player_input.bind("<Return>", self.process)
-        Game.player_input.pack(side=BOTTOM, fill=X)
-        Game.player_input.focus()
 
         # Create a frame for the text display area
-        text_frame = Frame(self, width=WIDTH / 2, height=HEIGHT / 2)
+        text_frame = Frame(self)
         text_frame.pack(side=RIGHT, fill=BOTH, expand=1)
-        text_frame.pack_propagate(False)
 
         # Text widget for displaying game status
-        Game.text = Text(text_frame, bg="lightgrey", state=DISABLED)
+        Game.text = Text(text_frame, bg="lightgrey", state=DISABLED, wrap=NONE, width=50)
         Game.text.pack(fill=BOTH, expand=1)
 
         # Create a frame for the control buttons
-        button_frame = Frame(self, width=WIDTH / 2, height=HEIGHT / 2)
-        button_frame.pack(side=RIGHT, fill=BOTH, expand=1)
-        button_frame.pack_propagate(False)
+        button_frame = Frame(self)
+        button_frame.pack(side=LEFT, fill=Y)
 
         # WASD control buttons
         wimg = PhotoImage(file="up.png")
-        button_w = Button(button_frame, text="W", command=lambda: self.move("north"), image=wimg)
-        button_w.grid(row=0, column=1)
-        limg = PhotoImage(file="left.png")
-        button_a = Button(button_frame, text="A", command=lambda: self.move("west"), image=limg)
-        button_a.grid(row=1, column=0)
+        button_w = Button(button_frame, text="W", command=lambda: self.move("north"), image=wimg, width=50, height=50)
+        button_w.pack(side=TOP, fill=X)
+        aimg = PhotoImage(file="left.png")
+        button_a = Button(button_frame, text="A", command=lambda: self.move("west"), image=aimg, width=50, height=50)
+        button_a.pack(side=LEFT, fill=Y)
         simg = PhotoImage(file="down.png")
-        button_s = Button(button_frame, text="S", command=lambda: self.move("south"), image=simg)
-        button_s.grid(row=1, column=1)
+        button_s = Button(button_frame, text="S", command=lambda: self.move("south"), image=simg, width=50, height=50)
+        button_s.pack(side=BOTTOM, fill=X)
         dimg = PhotoImage(file="right.png")
-        button_d = Button(button_frame, text="D", command=lambda: self.move("east"), image=dimg)
-        button_d.grid(row=1, column=2)
+        button_d = Button(button_frame, text="D", command=lambda: self.move("east"), image=dimg, width=50, height=50)
+        button_d.pack(side=RIGHT, fill=Y)
 
         # Create a label for displaying the room image
-        self.image_label = Label(button_frame)
-        self.image_label.grid(row=0, column=0, rowspan=2, columnspan=3)
+        self.image_label = Label(self)
+        self.image_label.pack(side=LEFT, fill=BOTH, expand=1)
 
     def move(self, direction):
         if Game.currentRoom and direction in Game.currentRoom.exits:
