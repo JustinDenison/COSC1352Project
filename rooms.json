@@ -125,7 +125,8 @@
 	"west": "Room 10"
       },
       "items": {
-        "pill_bottles": "labels are faded and contents long gone"
+        "pill_bottles": "labels are faded and contents long gone",
+	"bookshelf" : "just a bookshelf it looks to be recently moved"
       },
       "grabbables": []
     },
@@ -258,7 +259,7 @@
       },
       "items": {
         "safe": "it seems to be locked and need a 6 digit code",
-        "sticky_note": "The numbers you desire can be found when it all began"
+        "note": "The numbers you desire can be found when it all began"
       },
       "grabbables": []
     },
@@ -281,9 +282,7 @@
         "east": "Room 14",
         "west": "Room 21"
       },
-      "items": {
-        "diary4": "Contents of diary4"
-      },
+      "items": {},
       "grabbables": []
     }
   ]

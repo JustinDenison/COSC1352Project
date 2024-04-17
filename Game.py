@@ -1,14 +1,3 @@
-
-###############################################
-# Name: Justin Denison, Pete Schellingerhout, John Auman
-# Date: 3/30/24 (final)
-# A game with many rooms and a puzzle
-# Instructions:
-#   1. take key and go to room 4 to interact with chest
-#   2. go to room 3 to interact with statue
-#   3. go to room 2 to inteact with fireplace
-#################################################
-
 import pygame
 from tkinter import *
 import json
@@ -106,8 +95,8 @@ class Room(object):
 class Game(Frame):
     def __init__(self, parent):
         Frame.__init__(self, parent)
+        self.image_label = None  # Store reference to the image label
 
-    # Method to create rooms in the game
     # Method to create rooms in the game
     def createRooms(self):
         with open('rooms.json') as f:
@@ -120,7 +109,7 @@ class Game(Frame):
             room = Room(room_data['name'], room_data['image'])
             room.exits = room_data.get('exits', {})
             room.items = room_data.get('items', {})
-            room.grabbables = room_data.get('grabbables', [])
+            room.grabbables = room_data.get('grabbables', {})
 
             # Check if there's a diary item, and if so, read its content from the file
             for item, desc in room.items.items():
@@ -144,39 +133,82 @@ class Game(Frame):
 
     def setupGUI(self):
         self.pack(fill=BOTH, expand=1)
+
         Game.player_input = Entry(self, bg="white")
         Game.player_input.bind("<Return>", self.process)
         Game.player_input.pack(side=BOTTOM, fill=X)
         Game.player_input.focus()
 
-        img = None
-        Game.image = Label(self, width=int(WIDTH / 2), image=img)
-        Game.image.image = img
-        Game.image.pack(side=LEFT, fill=Y)
-        Game.image.pack_propagate(False)
+        # Create a frame for the text display area
+        text_frame = Frame(self)
+        text_frame.pack(side=RIGHT, fill=BOTH, expand=1)
 
-        text_frame = Frame(self, width=WIDTH / 2)
+        # Text widget for displaying game status
+        Game.text = Text(text_frame, bg="lightgrey", state=DISABLED, wrap=NONE, width=50)
+        Game.text.pack(fill=BOTH, expand=1)
 
-        Game.text = Text(text_frame, bg="lightgrey", state=DISABLED)
-        Game.text.pack(fill=Y, expand=1)
-        text_frame.pack(side=RIGHT, fill=Y)
-        text_frame.pack_propagate(False)
+        # Create a frame for the control buttons
+        button_frame = Frame(self)
+        button_frame.pack(side=LEFT, fill=Y)
+
+        # Load button images
+        wimg = PhotoImage(file="up.png")
+        aimg = PhotoImage(file="left.png")
+        simg = PhotoImage(file="down.png")
+        dimg = PhotoImage(file="right.png")
+
+        # WASD control buttons using grid manager
+        button_w = Button(button_frame, text="W", command=lambda: self.move("north"), image=wimg, width=50, height=50)
+        button_w.image = wimg  # Keep a reference to the image
+        button_w.grid(row=0, column=1)
+
+        button_a = Button(button_frame, text="A", command=lambda: self.move("west"), image=aimg, width=50, height=50)
+        button_a.image = aimg  # Keep a reference to the image
+        button_a.grid(row=1, column=0)
+
+        button_s = Button(button_frame, text="S", command=lambda: self.move("south"), image=simg, width=50, height=50)
+        button_s.image = simg  # Keep a reference to the image
+        button_s.grid(row=1, column=1)
+
+        button_d = Button(button_frame, text="D", command=lambda: self.move("east"), image=dimg, width=50, height=50)
+        button_d.image = dimg  # Keep a reference to the image
+        button_d.grid(row=1, column=2)
+
+        # Create a label for displaying the room image
+        self.image_label = Label(self)
+        self.image_label.pack(side=LEFT, fill=BOTH, expand=1)
+
+    def move(self, direction):
+        if Game.currentRoom and direction in Game.currentRoom.exits:
+            Game.currentRoom = Game.currentRoom.exits[direction]
+            self.setStatus("Moved " + direction + ".")
+            self.setRoomImage()
+        else:
+            self.setStatus("Cannot move " + direction + ".")
+
+    def move(self, direction):
+        if Game.currentRoom and direction in Game.currentRoom.exits:
+            Game.currentRoom = Game.currentRoom.exits[direction]
+            self.setStatus("Moved " + direction + ".")
+            self.setRoomImage()
+        else:
+            self.setStatus("Cannot move " + direction + ".")
 
     # Method to set the current room image
     def setRoomImage(self):
-        if (Game.currentRoom == None):
-            Game.img = PhotoImage(file="skull.gif")
+        if Game.currentRoom is None:
+            img = PhotoImage(file="skull.gif")
         else:
-            Game.img = PhotoImage(file=Game.currentRoom.image)
+            img = PhotoImage(file=Game.currentRoom.image)
 
-        Game.image.config(image=Game.img)
-        Game.image.image = Game.img
+        self.image_label.config(image=img)
+        self.image_label.image = img
 
     # Method to set the status displayed on the right of the GUI
     def setStatus(self, status):
         Game.text.config(state=NORMAL)
         Game.text.delete("1.0", END)
-        if (Game.currentRoom == None):
+        if Game.currentRoom is None:
             Game.text.insert(END, "You are dead")
         else:
             possible_actions = "Hints: \nYou can type: \ngo direction \ndirection = south, north, east, west \nlook item \nitem = check 'you see' \ntake grabbable \ngrabbable = see 'you can carry'"
@@ -192,31 +224,30 @@ class Game(Frame):
         self.setStatus("")
 
     # Method to process the player's input
-    # Method to process the player's input
     def process(self, event):
         action = Game.player_input.get()
         action = action.lower()
         response = "I don't understand. Try verb noun. Valid verbs are go, look, take."
-        if (action == "quit" or action == "exit" or action == "bye" or action == "sionara"):
+        if action in ["quit", "exit", "bye", "sionara"]:
             exit(0)
-        if (Game.currentRoom == None):
+        if Game.currentRoom is None:
             Game.player_input.delete(0, END)
             return
         words = action.split()
-        if (len(words) >= 2):
+        if len(words) >= 2:
             verb = words[0]
             noun = words[1]
 
         done = False
 
-        if (verb == "go"):
+        if verb == "go":
             response = "Invalid exit."
-            if (noun in Game.currentRoom.exits):
+            if noun in Game.currentRoom.exits:
                 Game.currentRoom = Game.currentRoom.exits[noun]
                 response = "Room changed."
-        elif (verb == "look"):
+        elif verb == "look":
             response = "I don't see that item"
-            if (noun in Game.currentRoom.items):
+            if noun in Game.currentRoom.items:
                 response = Game.currentRoom.items[noun]
         elif verb == "interact":
             if noun == "safe":
@@ -243,16 +274,28 @@ class Game(Frame):
                     Game.inventory.append("key1")
                 else:
                     response = Game.currentRoom.items[noun]
+            elif noun == "diary2":
+                if "diary2" not in Game.inventory:
+                    response = Game.currentRoom.items[noun]
+                    Game.inventory.append("key2")
+                else:
+                    response = Game.currentRoom.items[noun]
+            elif noun == "diary5":
+                if "diary5" not in Game.inventory:
+                    response = Game.currentRoom.items[noun]
+                    Game.inventory.append("key5")
+                else:
+                    response = Game.currentRoom.items[noun]
             elif noun == "fireplace":
                 if "fire extinguisher" in Game.inventory:
                     response = "You have extinguished the fireplace and escaped through a hidden door!"
                     exit(0)
                 else:
                     response = "The fireplace crackles warmly."
-        elif (verb == "take"):
+        elif verb == "take":
             response = "I don't see that item"
             for grabbable in Game.currentRoom.grabbables:
-                if (noun == grabbable):
+                if noun == grabbable:
                     Game.inventory.append(grabbable)
                     Game.currentRoom.delGrabbable(grabbable)
                     response = "Item grabbed"
@@ -266,7 +309,7 @@ class Game(Frame):
 
 # Default size of the GUI
 WIDTH = 1600
-HEIGHT = 1200
+HEIGHT = 600
 
 # Create the window
 window = Tk()

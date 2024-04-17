@@ -134,6 +134,11 @@ class Game(Frame):
     def setupGUI(self):
         self.pack(fill=BOTH, expand=1)
 
+        Game.player_input = Entry(self, bg="white")
+        Game.player_input.bind("<Return>", self.process)
+        Game.player_input.pack(side=BOTTOM, fill=X)
+        Game.player_input.focus()
+
         # Create a frame for the text display area
         text_frame = Frame(self)
         text_frame.pack(side=RIGHT, fill=BOTH, expand=1)
@@ -146,23 +151,40 @@ class Game(Frame):
         button_frame = Frame(self)
         button_frame.pack(side=LEFT, fill=Y)
 
-        # WASD control buttons
+        # Load button images
         wimg = PhotoImage(file="up.png")
-        button_w = Button(button_frame, text="W", command=lambda: self.move("north"), image=wimg, width=50, height=50)
-        button_w.pack(side=TOP, fill=X)
         aimg = PhotoImage(file="left.png")
-        button_a = Button(button_frame, text="A", command=lambda: self.move("west"), image=aimg, width=50, height=50)
-        button_a.pack(side=LEFT, fill=Y)
         simg = PhotoImage(file="down.png")
-        button_s = Button(button_frame, text="S", command=lambda: self.move("south"), image=simg, width=50, height=50)
-        button_s.pack(side=BOTTOM, fill=X)
         dimg = PhotoImage(file="right.png")
+
+        # WASD control buttons using grid manager
+        button_w = Button(button_frame, text="W", command=lambda: self.move("north"), image=wimg, width=50, height=50)
+        button_w.image = wimg  # Keep a reference to the image
+        button_w.grid(row=0, column=1)
+
+        button_a = Button(button_frame, text="A", command=lambda: self.move("west"), image=aimg, width=50, height=50)
+        button_a.image = aimg  # Keep a reference to the image
+        button_a.grid(row=1, column=0)
+
+        button_s = Button(button_frame, text="S", command=lambda: self.move("south"), image=simg, width=50, height=50)
+        button_s.image = simg  # Keep a reference to the image
+        button_s.grid(row=1, column=1)
+
         button_d = Button(button_frame, text="D", command=lambda: self.move("east"), image=dimg, width=50, height=50)
-        button_d.pack(side=RIGHT, fill=Y)
+        button_d.image = dimg  # Keep a reference to the image
+        button_d.grid(row=1, column=2)
 
         # Create a label for displaying the room image
         self.image_label = Label(self)
         self.image_label.pack(side=LEFT, fill=BOTH, expand=1)
+
+    def move(self, direction):
+        if Game.currentRoom and direction in Game.currentRoom.exits:
+            Game.currentRoom = Game.currentRoom.exits[direction]
+            self.setStatus("Moved " + direction + ".")
+            self.setRoomImage()
+        else:
+            self.setStatus("Cannot move " + direction + ".")
 
     def move(self, direction):
         if Game.currentRoom and direction in Game.currentRoom.exits:
@@ -250,6 +272,18 @@ class Game(Frame):
                 if "diary1" not in Game.inventory:
                     response = Game.currentRoom.items[noun]
                     Game.inventory.append("key1")
+                else:
+                    response = Game.currentRoom.items[noun]
+            elif noun == "diary2":
+                if "diary2" not in Game.inventory:
+                    response = Game.currentRoom.items[noun]
+                    Game.inventory.append("key2")
+                else:
+                    response = Game.currentRoom.items[noun]
+            elif noun == "diary5":
+                if "diary5" not in Game.inventory:
+                    response = Game.currentRoom.items[noun]
+                    Game.inventory.append("key5")
                 else:
                     response = Game.currentRoom.items[noun]
             elif noun == "fireplace":
