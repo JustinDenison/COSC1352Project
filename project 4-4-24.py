@@ -7,17 +7,14 @@ pygame.mixer.init()
 pygame.mixer.music.load('PsycWard.mp3')
 pygame.mixer.music.play(-1)
 
-# Class representing a room in the game
 class Room(object):
     def __init__(self, name, image):
-        # Initialize room attributes
         self._name = name
         self._image = image
         self._exits = {}
         self._items = {}
         self._grabbables = []
 
-    # Getter and setter methods for room attributes
     @property
     def name(self):
         return self._name
@@ -58,23 +55,18 @@ class Room(object):
     def grabbables(self, value):
         self._grabbables = value
 
-    # Method to add an exit to the room
     def addExit(self, exit, room):
         self._exits[exit] = room
 
-    # Method to add an item to the room
     def addItem(self, item, desc):
         self._items[item] = desc
 
-    # Method to add a grabbable item to the room
     def addGrabbable(self, item):
         self._grabbables.append(item)
 
-    # Method to remove a grabbable item from the room
     def delGrabbable(self, item):
         self._grabbables.remove(item)
 
-    # Method to return a string description of the room
     def __str__(self):
         s = "You are in {}.\n".format(self.name)
         s += "You see: "
@@ -91,13 +83,11 @@ class Room(object):
         return s
 
 
-# Class representing the game
 class Game(Frame):
     def __init__(self, parent):
         Frame.__init__(self, parent)
-        self.image_label = None  # Store reference to the image label
+        self.image_label = None
 
-    # Method to create rooms in the game
     def createRooms(self):
         with open('rooms.json') as f:
             data = json.load(f)
@@ -111,45 +101,33 @@ class Game(Frame):
             room.items = room_data.get('items', {})
             room.grabbables = room_data.get('grabbables', {})
 
-            # Check if there's a diary item, and if so, read its content from the file
             for item, desc in room.items.items():
                 if item.startswith("diary"):
                     diary_number = item.split("diary")[1]
                     with open(f"diary{diary_number}.txt", "r") as f:
                         diary_content = f.read()
-                    room.items[item] = diary_content.strip()  # Set the content of the diary
+                    room.items[item] = diary_content.strip()
 
             rooms[room.name] = room
 
-        # Link exits
         for room_data in rooms_data:
             room = rooms[room_data['name']]
             for exit_dir, exit_room_name in room_data.get('exits', {}).items():
                 room.addExit(exit_dir, rooms[exit_room_name])
 
-        # Set initial room
         Game.currentRoom = rooms['Room 1']
         Game.inventory = []
 
     def setupGUI(self):
         self.pack(fill=BOTH, expand=1)
 
-        Game.player_input = Entry(self, bg="white")
-        Game.player_input.bind("<Return>", self.process)
-        Game.player_input.pack(side=BOTTOM, fill=X)
-        Game.player_input.focus()
-
-        # Create a frame for the text display area
-        text_frame = Frame(self)
-        text_frame.pack(side=RIGHT, fill=BOTH, expand=1)
-
-        # Text widget for displaying game status
-        Game.text = Text(text_frame, bg="lightgrey", state=DISABLED, wrap=NONE, width=50)
-        Game.text.pack(fill=BOTH, expand=1)
+        # Create a frame for the control buttons and mini-map
+        control_frame = Frame(self)
+        control_frame.pack(side=LEFT, fill=Y)
 
         # Create a frame for the control buttons
-        button_frame = Frame(self)
-        button_frame.pack(side=LEFT, fill=Y)
+        button_frame = Frame(control_frame)
+        button_frame.pack(side=TOP, fill=Y, padx=10)
 
         # Load button images
         wimg = PhotoImage(file="up.png")
@@ -174,9 +152,28 @@ class Game(Frame):
         button_d.image = dimg  # Keep a reference to the image
         button_d.grid(row=1, column=2)
 
+        # Create a label for the mini-map
+        mini_map_frame = Frame(control_frame)
+        mini_map_frame.pack(side=TOP, fill=Y, padx=5)
+
+        self.mini_map_label = Label(mini_map_frame)
+        self.mini_map_label.pack(side=TOP, fill=BOTH, expand=1)
+
+        # Create a frame for the text display area
+        text_frame = Frame(control_frame)
+        text_frame.pack(side=TOP, fill=BOTH, expand=1)
+
+        # Text widget for displaying game status
+        Game.text = Text(text_frame, bg="lightgrey", state=DISABLED, wrap=NONE, width=50)
+        Game.text.pack(fill=BOTH, expand=1)
+
+        # Create a frame for the room image
+        image_frame = Frame(self)
+        image_frame.pack(side=LEFT, fill=BOTH, expand=1)
+
         # Create a label for displaying the room image
-        self.image_label = Label(self)
-        self.image_label.pack(side=LEFT, fill=BOTH, expand=1)
+        self.image_label = Label(image_frame)
+        self.image_label.pack(side=TOP, fill=BOTH, expand=1)
 
     def move(self, direction):
         if Game.currentRoom and direction in Game.currentRoom.exits:
@@ -186,15 +183,6 @@ class Game(Frame):
         else:
             self.setStatus("Cannot move " + direction + ".")
 
-    def move(self, direction):
-        if Game.currentRoom and direction in Game.currentRoom.exits:
-            Game.currentRoom = Game.currentRoom.exits[direction]
-            self.setStatus("Moved " + direction + ".")
-            self.setRoomImage()
-        else:
-            self.setStatus("Cannot move " + direction + ".")
-
-    # Method to set the current room image
     def setRoomImage(self):
         if Game.currentRoom is None:
             img = PhotoImage(file="skull.gif")
@@ -204,7 +192,20 @@ class Game(Frame):
         self.image_label.config(image=img)
         self.image_label.image = img
 
-    # Method to set the status displayed on the right of the GUI
+        mini_map_image = None
+        if Game.currentRoom:
+            mini_map_filename = "map{}.png".format(Game.currentRoom.name.split()[-1])
+            try:
+                mini_map_image = PhotoImage(file=mini_map_filename)
+            except:
+                pass
+
+        if mini_map_image is None:
+            mini_map_image = PhotoImage(file="placeholder_map.png")
+
+        self.mini_map_label.config(image=mini_map_image)
+        self.mini_map_label.image = mini_map_image
+
     def setStatus(self, status):
         Game.text.config(state=NORMAL)
         Game.text.delete("1.0", END)
@@ -216,14 +217,12 @@ class Game(Frame):
                 Game.inventory) + "\n\n" + status + "\n\n\n" + possible_actions)
             Game.text.config(state=DISABLED)
 
-    # Method to start playing the game
     def play(self):
         self.createRooms()
         self.setupGUI()
         self.setRoomImage()
         self.setStatus("")
 
-    # Method to process the player's input
     def process(self, event):
         action = Game.player_input.get()
         action = action.lower()
@@ -283,7 +282,6 @@ class Game(Frame):
             elif noun == "poster" and "key5" not in Game.inventory:
                 response = "You found a hidden compartment behind the poster and discovered a key!"
                 Game.inventory.append("key5")
-            # Add the diary item to the room
                 Game.currentRoom.addItem("diary5", "An old diary lies on the ground.")
             elif noun == "mirror" and "hammer" in Game.inventory:
                 response = "You have broken the window with the hammer out of anger! Behind it you find a hidden door with 5 locks on it! This is on a wall that is supposed to not have anything behind it. It must be a secret room!"
@@ -305,20 +303,13 @@ class Game(Frame):
         Game.player_input.delete(0, END)
 
 
-######################MAIN#########################
-
-# Default size of the GUI
 WIDTH = 1600
 HEIGHT = 600
 
-# Create the window
 window = Tk()
 window.title("Room Adventure")
 
-# Create the GUI as a Tkinter canvas inside the window
 g = Game(window)
-# Play the game
 g.play()
 
-# Wait for the window to close
 window.mainloop()
