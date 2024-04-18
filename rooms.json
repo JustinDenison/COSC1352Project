@@ -11,14 +11,14 @@
         "table": "it looks very sturdy",
         "diary1": "Contents of diary1"
       },
-      "grabbables": ["key"]
+      "grabbables": ["hammer"]
     },
     {
       "name": "Room 2",
       "image": "room2.png",
       "exits": {
         "north": "Room 3",
-	"south": "Room 1"
+        "south": "Room 1"
       },
       "items": {
         "rug": "it looks very old and recently moved",
@@ -33,7 +33,7 @@
       "exits": {
         "north": "Room 4",
         "east": "Room 17",
-	"south": "Room 2"
+        "south": "Room 2"
       },
       "items": {
         "bookshelf": "it has many random books on it and some big ones that stand out",
@@ -47,7 +47,7 @@
       "image": "room4.png",
       "exits": {
         "north": "Room 5",
-	"south": "Room 3"
+        "south": "Room 3"
       },
       "items": {
         "brewrig": "it is here for some reason, I guess",
@@ -60,7 +60,7 @@
       "image": "room5.png",
       "exits": {
         "north": "Room 6",
-	"south": "Room 4"
+        "south": "Room 4"
       },
       "items": {
         "wheelchair": "the wheels squeak eerily as you push it"
@@ -72,7 +72,7 @@
       "image": "room6.png",
       "exits": {
         "east": "Room 7",
-	"south": "Room 5"
+        "south": "Room 5"
       },
       "items": {},
       "grabbables": []
@@ -82,7 +82,7 @@
       "image": "room7.png",
       "exits": {
         "east": "Room 8",
-	"west": "Room 6"
+        "west": "Room 6"
       },
       "items": {},
       "grabbables": []
@@ -92,7 +92,7 @@
       "image": "room8.png",
       "exits": {
         "east": "Room 9",
-	"west": "Room 7"
+        "west": "Room 7"
       },
       "items": {},
       "grabbables": []
@@ -102,7 +102,7 @@
       "image": "room9.png",
       "exits": {
         "east": "Room 10",
-	"west": "Room 8"
+        "west": "Room 8"
       },
       "items": {},
       "grabbables": []
@@ -112,7 +112,7 @@
       "image": "room10.png",
       "exits": {
         "east": "Room 11",
-	"west": "Room 9"
+        "west": "Room 9"
       },
       "items": {},
       "grabbables": []
@@ -122,11 +122,11 @@
       "image": "room11.png",
       "exits": {
         "south": "Room 12",
-	"west": "Room 10"
+        "west": "Room 10"
       },
       "items": {
         "pill_bottles": "labels are faded and contents long gone",
-	"bookshelf" : "just a bookshelf it looks to be recently moved"
+        "bookshelf" : "just a bookshelf it looks to be recently moved"
       },
       "grabbables": []
     },
@@ -135,11 +135,10 @@
       "image": "room12.png",
       "exits": {
         "south": "Room 13",
-	"north": "Room 11"
+        "north": "Room 11"
       },
       "items": {
-        "scratched_window": "from here, doctors once observed the patients' behavior",
-        "diary5": "Contents of Diary 5"
+        "scratched_window": "from here, doctors once observed the patients' behavior"
       },
       "grabbables": []
     },
@@ -148,7 +147,7 @@
       "image": "room13.png",
       "exits": {
         "south": "Room 14",
-	"north": "Room 12"
+        "north": "Room 12"
       },
       "items": {},
       "grabbables": []
@@ -159,11 +158,10 @@
       "exits": {
         "south": "Room 15",
         "west": "Room 24",
-	"north": "Room 13"
+        "north": "Room 13"
       },
       "items": {
-        "floor_stain": "dark and red probably remnants of an experiment",
-        "diary6": "Contents of Diary 6"
+        "floor_stain": "dark and red probably remnants of an experiment"
       },
       "grabbables": []
     },
@@ -172,7 +170,7 @@
       "image": "room15.png",
       "exits": {
         "south": "Room 16",
-	"north": "Room 14"
+        "north": "Room 14"
       },
       "items": {},
       "grabbables": []
@@ -245,8 +243,8 @@
         "east": "Room 24"
       },
       "items": {
-        "rusty_tools": "a testament of past experiments, they are oddly red tinted",
-        "diary3": "Contents of diary 3"
+        "rusty_tools": "a testament of past experiments, they are oddly red-tinted",
+        "poster": "a very odd poster saying 'There is no hope'"
       },
       "grabbables": []
     },
@@ -282,7 +280,20 @@
         "east": "Room 14",
         "west": "Room 21"
       },
-      "items": {},
+      "items": {
+        "mirror": "the broken pieces lay on the ground"
+      },
+      "grabbables": []
+    },
+    {
+      "name": "Hidden Room",
+      "image": "Hidden.png",
+      "exits": {
+        "final": "Room 1"
+      },
+      "items": {
+        "diary6": "contents of diary 6"
+      },
       "grabbables": []
     }
   ]

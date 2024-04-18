@@ -280,18 +280,18 @@ class Game(Frame):
                     Game.inventory.append("key2")
                 else:
                     response = Game.currentRoom.items[noun]
-            elif noun == "diary5":
-                if "diary5" not in Game.inventory:
-                    response = Game.currentRoom.items[noun]
-                    Game.inventory.append("key5")
-                else:
-                    response = Game.currentRoom.items[noun]
-            elif noun == "fireplace":
-                if "fire extinguisher" in Game.inventory:
-                    response = "You have extinguished the fireplace and escaped through a hidden door!"
-                    exit(0)
-                else:
-                    response = "The fireplace crackles warmly."
+            elif noun == "poster" and "key5" not in Game.inventory:
+                response = "You found a hidden compartment behind the poster and discovered a key!"
+                Game.inventory.append("key5")
+            # Add the diary item to the room
+                Game.currentRoom.addItem("diary5", "An old diary lies on the ground.")
+            elif noun == "mirror" and "hammer" in Game.inventory:
+                response = "You have broken the window with the hammer out of anger! Behind it you find a hidden door with 5 locks on it! This is on a wall that is supposed to not have anything behind it. It must be a secret room!"
+                Game.currentRoom.addItem("door", "the door has 5 locks on it")
+            elif noun == "door" and "door" in Game.currentRoom.items and "key1" in Game.inventory and "key2" in Game.inventory and "key3" in Game.inventory and "key4" in Game.inventory and "key5" in Game.inventory:
+                response = "You unlock the hidden door and enter the secret room!"
+                Game.currentRoom = Game.currentRoom.exits["Hidden"]
+
         elif verb == "take":
             response = "I don't see that item"
             for grabbable in Game.currentRoom.grabbables:
