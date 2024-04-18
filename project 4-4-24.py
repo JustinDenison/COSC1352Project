@@ -121,57 +121,56 @@ class Game(Frame):
     def setupGUI(self):
         self.pack(fill=BOTH, expand=1)
 
-        # Create a frame for the control buttons and mini-map
         control_frame = Frame(self)
         control_frame.pack(side=LEFT, fill=Y)
 
-        # Create a frame for the control buttons
         button_frame = Frame(control_frame)
         button_frame.pack(side=TOP, fill=Y, padx=10)
 
-        # Load button images
         wimg = PhotoImage(file="up.png")
         aimg = PhotoImage(file="left.png")
         simg = PhotoImage(file="down.png")
         dimg = PhotoImage(file="right.png")
 
-        # WASD control buttons using grid manager
         button_w = Button(button_frame, text="W", command=lambda: self.move("north"), image=wimg, width=50, height=50)
-        button_w.image = wimg  # Keep a reference to the image
+        button_w.image = wimg
         button_w.grid(row=0, column=1)
 
         button_a = Button(button_frame, text="A", command=lambda: self.move("west"), image=aimg, width=50, height=50)
-        button_a.image = aimg  # Keep a reference to the image
+        button_a.image = aimg
         button_a.grid(row=1, column=0)
 
         button_s = Button(button_frame, text="S", command=lambda: self.move("south"), image=simg, width=50, height=50)
-        button_s.image = simg  # Keep a reference to the image
+        button_s.image = simg
         button_s.grid(row=1, column=1)
 
         button_d = Button(button_frame, text="D", command=lambda: self.move("east"), image=dimg, width=50, height=50)
-        button_d.image = dimg  # Keep a reference to the image
+        button_d.image = dimg
         button_d.grid(row=1, column=2)
 
-        # Create a label for the mini-map
         mini_map_frame = Frame(control_frame)
         mini_map_frame.pack(side=TOP, fill=Y, padx=5)
 
         self.mini_map_label = Label(mini_map_frame)
         self.mini_map_label.pack(side=TOP, fill=BOTH, expand=1)
 
-        # Create a frame for the text display area
         text_frame = Frame(control_frame)
         text_frame.pack(side=TOP, fill=BOTH, expand=1)
 
-        # Text widget for displaying game status
-        Game.text = Text(text_frame, bg="lightgrey", state=DISABLED, wrap=NONE, width=50)
-        Game.text.pack(fill=BOTH, expand=1)
+        Game.text = Text(text_frame, bg="lightgrey", wrap=WORD, width=50, height=10)
+        Game.text.pack(side=TOP, fill=BOTH, expand=True)
 
-        # Create a frame for the room image
+        input_label = Label(control_frame, text="Enter command:")
+        input_label.pack(side=TOP, pady=5)
+
+        Game.player_input = Entry(control_frame, bg="lightgrey")
+        Game.player_input.pack(side=TOP, pady=5)
+
+        Game.player_input.bind("<Return>", self.process)
+
         image_frame = Frame(self)
         image_frame.pack(side=LEFT, fill=BOTH, expand=1)
 
-        # Create a label for displaying the room image
         self.image_label = Label(image_frame)
         self.image_label.pack(side=TOP, fill=BOTH, expand=1)
 
@@ -260,11 +259,12 @@ class Game(Frame):
                 else:
                     response = "The safe requires a password."
             elif noun == "bookshelf":
-                if "diary4" not in Game.currentRoom.items:
+                if "diary4" not in Game.currentRoom.items and "key4" not in Game.inventory:
                     with open("diary4.txt", "r") as f:
                         diary_content = f.read()
                     response = Game.currentRoom.items[noun]
                     Game.inventory.append("key4")
+                    Game.currentRoom.addItem("diary4", diary_content.strip())
                 else:
                     response = Game.currentRoom.items[noun]
             elif noun == "diary1":
@@ -288,6 +288,7 @@ class Game(Frame):
                 Game.currentRoom.addItem("door", "the door has 5 locks on it")
             elif noun == "door" and "door" in Game.currentRoom.items and "key1" in Game.inventory and "key2" in Game.inventory and "key3" in Game.inventory and "key4" in Game.inventory and "key5" in Game.inventory:
                 response = "You unlock the hidden door and enter the secret room!"
+                Game.currentRoom.addExit("hidden", hidden)
                 Game.currentRoom = Game.currentRoom.exits["Hidden"]
 
         elif verb == "take":
