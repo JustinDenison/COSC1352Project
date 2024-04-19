@@ -1,0 +1,103 @@
+############################
+#Name: Peter Schellingerhout
+#Date: April 20th 2024
+############################
+import random
+from tkinter import *
+from tkinter.scrolledtext import ScrolledText
+from random import randint
+group1 = 0
+group2 = 0
+professor = 0
+#Roll dice function
+def roll():
+    return randint(1,6)
+#Point accumulation system
+def points(roll1, roll2):
+    global group1, group2, professor
+    total= roll1 + roll2
+    if total <= 4:
+        group1 += 1
+    elif total >9:
+        group2 +=1
+    else:
+        professor +=1
+
+def calculate(rolls):
+    for i in range(rolls):
+        dice1 = roll()
+        dice2 = roll()
+        points(dice1, dice2)
+
+def start():
+    global group1, group2, professor
+    group1 = group2 = professor = 0
+    g1w = g2w = pw = 0
+    num_games = int(games_entry.get())
+    num_rolls =int(rolls_entry.get())
+    for i in range(num_games):
+        group1 = group2 = professor = 0
+        calculate(num_rolls)
+        game_text = f"Game {i+1}:\n"
+
+        game_text += f"\t Group 1: {group1} points Group 2: {group2} points Professor: {professor} points\n\n"
+        stats_text_widget.insert(END, game_text)
+
+        if group1 > group2 and group1 > professor:
+            g1w += 1
+        elif group2 > group1 and group2 > professor:
+            g2w += 1
+        elif professor > group2 and professor > group1:
+            pw += 1
+        else:
+            tie = random.choice(['g1', 'g2', 'p'])
+            if tie == "g1":
+                g1w
+            elif tie == "g2":
+                g2w
+            elif tie == "p":
+                pw
+    game_text = f"Wins:\n Group 1: {g1w} points Group 2: {g2w} points Professor: {pw} points\n\n"
+    stats_text_widget.insert(END, game_text)
+
+
+
+
+
+####################################################
+
+# Initialize the main window
+window = Tk()
+window.title("Dice Roll Game")
+
+# Create and pack the frame
+frame = Frame(window)
+frame.pack(padx=10, pady=10)
+
+# Number of games
+games_label = Label(frame, text="Number of games:")
+games_label.grid(row=0, column=0, pady=(0, 5))
+games_entry = Entry(frame)
+games_entry.grid(row=0, column=1, pady=(0, 5))
+
+
+# GUI setup for the dice roll game
+rolls_label = Label(frame, text="Number of dice rolls per game:")
+rolls_label.grid(row=1, column=0)
+rolls_entry = Entry(frame)
+rolls_entry.grid(row=1, column=1)
+
+
+
+
+# Simulate button
+simulate_button = Button(frame, text="Play", command=start) # modify and add the command
+simulate_button.grid(row=2, column=0, columnspan=2, pady=(5, 10))
+
+# Text widget with scrollbar for stats
+stats_text_widget = ScrolledText(window, height=25, width=70)
+stats_text_widget.pack()
+
+
+window.mainloop()
+
